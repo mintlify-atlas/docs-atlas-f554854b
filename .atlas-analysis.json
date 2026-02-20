@@ -1,0 +1,83 @@
+{
+  "projectType": "general",
+  "projectName": "nvim-luffy",
+  "projectDescription": "A feature-rich Neovim configuration inspired by One Piece, built with lazy.nvim and modern Lua plugins",
+  "theme": "almond",
+  "primaryColor": "#e67e80",
+  "lightColor": "#a7c080",
+  "darkColor": "#7fbbb3",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "introduction",
+          "installation",
+          "quickstart"
+        ]
+      },
+      {
+        "group": "Configuration",
+        "pages": [
+          "configuration/options",
+          "configuration/keymaps",
+          "configuration/autocommands"
+        ]
+      },
+      {
+        "group": "Plugins",
+        "pages": [
+          "plugins/overview",
+          "plugins/lsp",
+          "plugins/telescope",
+          "plugins/treesitter",
+          "plugins/file-explorer",
+          "plugins/git-integration",
+          "plugins/completion",
+          "plugins/ui-enhancements"
+        ]
+      },
+      {
+        "group": "Customization",
+        "pages": [
+          "customization/themes",
+          "customization/keybindings",
+          "customization/adding-plugins",
+          "customization/plugin-configuration"
+        ]
+      },
+      {
+        "group": "Reference",
+        "pages": [
+          "reference/keymap-cheatsheet",
+          "reference/plugin-list",
+          "reference/structure"
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Modern plugin management with lazy.nvim",
+    "LSP configuration with Mason",
+    "Fuzzy finding with Telescope",
+    "Syntax highlighting with Treesitter",
+    "Git integration with Neogit and Diffview",
+    "File navigation with nvim-tree and Harpoon",
+    "Auto-completion with nvim-cmp",
+    "Multiple colorscheme options",
+    "Custom keymaps and autocommands",
+    "One Piece themed dashboard"
+  ],
+  "publicApiSurface": [
+    "Core options (tabstop, shiftwidth, relative numbers)",
+    "Leader key: <Space>",
+    "Window split keymaps: <leader>| and <leader>sh",
+    "Buffer management: <leader>bd, <leader>ba",
+    "Telescope: <leader><leader>, <leader>/, <leader>fr",
+    "File tree toggle",
+    "LSP keybindings",
+    "Git operations via Neogit",
+    "Flash navigation",
+    "Harpoon quick navigation"
+  ]
+}
