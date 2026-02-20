@@ -1,0 +1,507 @@
+---
+title: Plugin configuration
+description: Customize and modify existing plugin settings in nvim-luffy
+---
+
+## Understanding plugin configuration
+
+Each plugin in nvim-luffy has its own configuration file in the `lua/leyland/plugins/` directory. These files define both the plugin specification (name, dependencies, loading behavior) and its runtime configuration (settings, keybindings, etc.).
+
+### Configuration structure
+
+A typical plugin configuration follows this pattern:
+
+```lua
+return {
+  "plugin/name",              -- Plugin identifier
+  dependencies = { ... },      -- Required plugins
+  event = "...",              -- When to load (lazy-loading)
+  config = function()          -- Configuration function
+    local plugin = require("plugin")
+    
+    plugin.setup({
+      -- Plugin settings go here
+    })
+    
+    -- Optional: Set keybindings
+    vim.keymap.set(...)
+  end,
+}
+```
+
+## Modifying existing plugins
+
+To customize a plugin that's already installed, you'll need to modify its configuration file.
+
+<Steps>
+  <Step title="Locate the plugin file">
+    Find the plugin's configuration file in `lua/leyland/plugins/`. For example:
+    - `telescope.lua` for Telescope fuzzy finder
+    - `nvim-tree.lua` for the file explorer
+    - `nvim-cmp.lua` for autocompletion
+  </Step>
+  
+  <Step title="Find the setup() call">
+    Look for the `setup()` function call within the `config` function. This is where plugin options are defined.
+  </Step>
+  
+  <Step title="Modify settings">
+    Update the configuration table passed to `setup()`. Refer to the plugin's documentation for available options.
+  </Step>
+  
+  <Step title="Reload Neovim">
+    Restart Neovim to apply your changes. Some plugins support hot-reloading, but a restart is safest.
+  </Step>
+</Steps>
+
+## Common customization patterns
+
+### Changing plugin settings
+
+Let's look at customizing nvim-tree's appearance and behavior:
+
+```lua lua/leyland/plugins/nvim-tree.lua
+config = function()
+  local nvimtree = require("nvim-tree")
+  
+  nvimtree.setup({
+    view = {
+      width = 50,              -- Change to 60 for wider sidebar
+      relativenumber = true,    -- Show relative line numbers
+      side = "right",          -- Change to "left" for left-side tree
+    },
+    renderer = {
+      indent_markers = {
+        enable = true,          -- Show indent guides
+      },
+      icons = {
+        glyphs = {
+          folder = {
+            arrow_closed = "",  -- Customize folder icons
+            arrow_open = "",
+          },
+        },
+      },
+    },
+    filters = {
+      custom = { ".DS_Store", "node_modules" },  -- Add patterns to hide
+    },
+    git = {
+      ignore = false,           -- Change to true to hide gitignored files
+    },
+  })
+end,
+```
+
+<Tip>
+Always check the plugin's documentation for available options. Most plugins have extensive documentation on GitHub.
+</Tip>
+
+### Modifying keybindings
+
+There are two ways to modify plugin keybindings:
+
+<CodeGroup>
+```lua Within plugin config
+return {
+  "nvim-telescope/telescope.nvim",
+  config = function()
+    local telescope = require("telescope")
+    local actions = require("telescope.actions")
+    
+    telescope.setup({
+      defaults = {
+        mappings = {
+          i = {
+            ["<C-j>"] = actions.move_selection_next,
+            ["<C-k>"] = actions.move_selection_previous,
+            -- Add your custom mappings
+            ["<C-d>"] = actions.delete_buffer,
+          },
+        },
+      },
+    })
+    
+    -- External keybindings
+    local keymap = vim.keymap
+    keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", 
+      { desc = "Find files" })
+    keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", 
+      { desc = "Live grep" })
+  end,
+}
+```
+
+```lua Using keys property
+return {
+  "nvim-tree/nvim-tree.lua",
+  keys = {
+    { "<leader>e", "<cmd>NvimTreeFindFileToggle<cr>", desc = "Toggle file explorer" },
+    -- Add more keybindings
+    { "<leader>ef", "<cmd>NvimTreeFocus<cr>", desc = "Focus file explorer" },
+    { "<leader>ec", "<cmd>NvimTreeCollapse<cr>", desc = "Collapse file explorer" },
+  },
+  config = function()
+    require("nvim-tree").setup({ ... })
+  end,
+}
+```
+</CodeGroup>
+
+### Adjusting lazy-loading behavior
+
+Control when plugins load to optimize startup time:
+
+<CodeGroup>
+```lua Load immediately
+return {
+  "plugin/name",
+  lazy = false,     -- Load on startup
+  priority = 1000,  -- Load before other plugins
+}
+```
+
+```lua Load on event
+return {
+  "plugin/name",
+  event = { "BufReadPre", "BufNewFile" },  -- Load when opening a file
+}
+```
+
+```lua Load on command
+return {
+  "plugin/name",
+  cmd = { "CommandName", "AnotherCommand" },  -- Load when running command
+}
+```
+
+```lua Load on keypress
+return {
+  "plugin/name",
+  keys = {
+    { "<leader>x", "<cmd>Command<cr>", desc = "Description" },
+  },
+}
+```
+</CodeGroup>
+
+### Adding plugin-specific keybindings
+
+Some plugins like nvim-tree allow custom keybindings within their UI:
+
+```lua lua/leyland/plugins/nvim-tree.lua
+config = function()
+  local nvimtree = require("nvim-tree")
+  local api = require("nvim-tree.api")
+  
+  local function on_attach(bufnr)
+    local function opts(desc)
+      return { 
+        desc = "nvim-tree: " .. desc, 
+        buffer = bufnr, 
+        noremap = true, 
+        silent = true, 
+        nowait = true 
+      }
+    end
+    
+    -- Default mappings
+    api.config.mappings.default_on_attach(bufnr)
+    
+    -- Custom mappings
+    vim.keymap.set("n", "l", api.node.open.edit, opts("Open"))
+    vim.keymap.set("n", "h", api.node.navigate.parent_close, opts("Close Directory"))
+    vim.keymap.set("n", "v", api.node.open.vertical, opts("Open in vertical split"))
+  end
+  
+  nvimtree.setup({
+    on_attach = on_attach,
+    -- ... other settings
+  })
+end,
+```
+
+## Real-world customization examples
+
+### Example 1: Customizing Telescope
+
+Let's modify Telescope to change search behavior and appearance:
+
+```lua lua/leyland/plugins/telescope.lua
+config = function()
+  local telescope = require("telescope")
+  local actions = require("telescope.actions")
+  
+  telescope.setup({
+    defaults = {
+      path_display = { "truncate" },  -- Change from "filename_first" to "truncate"
+      layout_config = {
+        horizontal = {
+          preview_width = 0.6,  -- Increase preview window width
+        },
+      },
+      mappings = {
+        i = {
+          ["<C-j>"] = actions.move_selection_next,
+          ["<C-k>"] = actions.move_selection_previous,
+          ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+          ["<C-x>"] = actions.delete_buffer,  -- Add buffer deletion
+        },
+      },
+      file_ignore_patterns = {  -- Add files to ignore
+        "node_modules",
+        ".git/",
+        "dist/",
+      },
+    },
+    pickers = {
+      find_files = {
+        hidden = true,  -- Show hidden files
+      },
+    },
+  })
+  
+  telescope.load_extension("fzf")
+  
+  -- Update keybindings
+  local keymap = vim.keymap
+  keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", 
+    { desc = "Find files" })
+  keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", 
+    { desc = "Live grep" })
+  keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", 
+    { desc = "Find buffers" })
+end,
+```
+
+### Example 2: Customizing nvim-tree
+
+Modify the file explorer's appearance and behavior:
+
+```lua lua/leyland/plugins/nvim-tree.lua
+config = function()
+  local nvimtree = require("nvim-tree")
+  
+  -- Disable netrw
+  vim.g.loaded_netrw = 1
+  vim.g.loaded_netrwPlugin = 1
+  
+  nvimtree.setup({
+    view = {
+      width = 40,           -- Narrower sidebar
+      side = "left",        -- Move to left side
+      relativenumber = false,  -- Use absolute numbers
+    },
+    renderer = {
+      group_empty = true,   -- Group empty folders
+      highlight_git = true, -- Highlight git changes
+      icons = {
+        show = {
+          git = true,
+          folder = true,
+          file = true,
+          folder_arrow = false,  -- Hide folder arrows
+        },
+      },
+    },
+    filters = {
+      dotfiles = false,     -- Show dotfiles
+      custom = { 
+        ".DS_Store", 
+        ".git",
+        "node_modules",
+      },
+    },
+    actions = {
+      open_file = {
+        quit_on_open = true,  -- Close tree after opening file
+      },
+    },
+  })
+end,
+```
+
+### Example 3: Modifying colorscheme
+
+Customize a theme's appearance:
+
+```lua lua/leyland/plugins/colorscheme.lua
+return {
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+    config = function()
+      require("catppuccin").setup({
+        flavour = "mocha",  -- latte, frappe, macchiato, mocha
+        transparent_background = true,
+        term_colors = true,
+        styles = {
+          comments = { "italic" },
+          conditionals = { "italic" },
+          functions = { "bold" },
+        },
+        integrations = {
+          telescope = true,
+          nvimtree = true,
+          treesitter = true,
+          native_lsp = {
+            enabled = true,
+            underlines = {
+              errors = { "undercurl" },
+              hints = { "undercurl" },
+              warnings = { "undercurl" },
+              information = { "undercurl" },
+            },
+          },
+        },
+      })
+      vim.cmd.colorscheme("catppuccin")
+    end,
+  },
+  -- ... other themes
+}
+```
+
+## Configuration best practices
+
+<AccordionGroup>
+  <Accordion title="Check plugin documentation first">
+    Always read the plugin's README and documentation before making changes. Most plugins have detailed configuration guides.
+  </Accordion>
+  
+  <Accordion title="Make incremental changes">
+    Change one setting at a time and test. This makes it easier to identify what caused issues if something breaks.
+  </Accordion>
+  
+  <Accordion title="Comment your customizations">
+    Add comments explaining why you made specific changes, especially for non-obvious settings:
+    ```lua
+    view = {
+      width = 60,  -- Wider to see long file names
+      side = "left",  -- Left side matches my tmux layout
+    },
+    ```
+  </Accordion>
+  
+  <Accordion title="Keep backups of working configs">
+    Before major changes, copy your working configuration or use git to track changes.
+  </Accordion>
+  
+  <Accordion title="Use plugin defaults when possible">
+    Only override settings you actually need to change. This makes updates easier and reduces configuration complexity.
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+### Configuration not applying
+
+<Steps>
+  <Step title="Check syntax">
+    Lua is picky about syntax. Make sure all brackets, parentheses, and commas are correct.
+  </Step>
+  
+  <Step title="Verify option names">
+    Option names are case-sensitive. Double-check against the plugin's documentation.
+  </Step>
+  
+  <Step title="Restart Neovim">
+    Most configuration changes require a full restart. Use `:qa!` to quit all buffers and restart.
+  </Step>
+  
+  <Step title="Check for errors">
+    Look for error messages on startup. Run `:messages` to see recent errors.
+  </Step>
+</Steps>
+
+### Plugin not loading
+
+If a plugin stops loading after changes:
+
+1. Check the Lazy UI (`:Lazy`) for error messages
+2. Verify the `return` statement at the start of the file
+3. Ensure the config table structure is valid
+4. Try `:Lazy reload {plugin-name}`
+
+### Conflicting settings
+
+Some settings may conflict with each other:
+
+```lua
+-- This might not work as expected:
+view = {
+  width = 30,      -- Fixed width
+  adaptive_size = true,  -- Dynamic width - conflicts with width!
+},
+
+-- Choose one approach:
+view = {
+  width = 30,      -- Fixed width
+},
+-- OR
+view = {
+  adaptive_size = true,  -- Dynamic width
+},
+```
+
+<Warning>
+Be careful when modifying LSP-related plugins. Incorrect LSP configuration can break code completion and diagnostics.
+</Warning>
+
+## Finding configuration options
+
+To discover available configuration options:
+
+1. **Check the plugin's GitHub README** - Most have a "Configuration" section
+2. **Read `:help plugin-name`** - Many plugins provide Vim help documentation
+3. **Browse source code** - Look for `setup()` function defaults in the plugin's code
+4. **Search dotfiles** - Look at other users' configurations on GitHub or [dotfyle.com](https://dotfyle.com/)
+
+## Advanced: Conditional configuration
+
+You can apply different settings based on conditions:
+
+```lua
+config = function()
+  local nvimtree = require("nvim-tree")
+  
+  -- Different settings based on screen width
+  local width = vim.o.columns
+  local tree_width = width > 120 and 50 or 30
+  
+  nvimtree.setup({
+    view = {
+      width = tree_width,
+    },
+  })
+end,
+```
+
+Or based on environment:
+
+```lua
+config = function()
+  local telescope = require("telescope")
+  
+  -- Enable preview only on machines with good performance
+  local is_fast = vim.fn.hostname() == "workstation"
+  
+  telescope.setup({
+    defaults = {
+      preview = is_fast,
+    },
+  })
+end,
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Themes" icon="palette" href="/customization/themes">
+    Customize your colorscheme
+  </Card>
+  <Card title="Keybindings" icon="keyboard" href="/customization/keybindings">
+    Learn about custom keybindings
+  </Card>
+</CardGroup>

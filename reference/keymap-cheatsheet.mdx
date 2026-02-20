@@ -1,0 +1,167 @@
+---
+title: Keymap cheatsheet
+description: Complete reference of all keybindings in nvim-luffy
+---
+
+## Leader key
+
+The leader key is set to `Space`. All keybindings below that start with `<leader>` use the spacebar as the prefix.
+
+## Window management
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader>\|` | Normal | Split window vertically |
+| `<leader>sh` | Normal | Split window horizontally |
+| `<leader>bd` | Normal | Close buffer |
+| `<leader>ba` | Normal | Close all buffers |
+
+## File navigation
+
+### Telescope fuzzy finder
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader><leader>` | Normal | Fuzzy find files in current working directory |
+| `<leader>fr` | Normal | Fuzzy find recent files |
+| `<leader>/` | Normal | Find string in current working directory (live grep) |
+| `<leader>fc` | Normal | Find string under cursor in current working directory |
+| `<leader>ft` | Normal | Find todos |
+| `<leader>fk` | Normal | Find keymaps (search available keybindings) |
+
+### Telescope navigation (insert mode)
+
+When inside Telescope picker:
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<C-k>` | Insert | Move to previous result |
+| `<C-j>` | Insert | Move to next result |
+| `<C-q>` | Insert | Send selected to quickfix list and open quickfix |
+
+### Nvim-tree file explorer
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader>e` | Normal | Toggle file explorer (focused on current file) |
+| `l` | Normal | Open file/directory (when in nvim-tree) |
+| `h` | Normal | Close directory (when in nvim-tree) |
+
+## Harpoon file navigation
+
+Harpoon lets you mark and quickly jump between files.
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader>H` | Normal | Add current file to Harpoon |
+| `<leader>h` | Normal | Toggle Harpoon quick menu |
+| `<leader>1` | Normal | Jump to Harpoon file 1 |
+| `<leader>2` | Normal | Jump to Harpoon file 2 |
+| `<leader>3` | Normal | Jump to Harpoon file 3 |
+| `<leader>4` | Normal | Jump to Harpoon file 4 |
+| `<leader>5` | Normal | Jump to Harpoon file 5 |
+| `<leader>6` | Normal | Jump to Harpoon file 6 |
+| `<leader>7` | Normal | Jump to Harpoon file 7 |
+| `<leader>8` | Normal | Jump to Harpoon file 8 |
+| `<leader>9` | Normal | Jump to Harpoon file 9 |
+
+## Motion and navigation
+
+### Flash.nvim quick jump
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `s` | Normal, Visual, Operator | Flash jump to any location |
+| `S` | Normal, Visual, Operator | Flash jump with Treesitter |
+| `r` | Operator | Remote Flash |
+| `R` | Visual, Operator | Treesitter search |
+| `<C-s>` | Command | Toggle Flash search |
+| `<C-Space>` | Normal, Visual, Operator | Treesitter incremental selection (use `<BS>` to go back) |
+
+Flash also enhances the default `f`, `t`, `F`, and `T` motions with:
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `;` | Normal | Next match (after f/t motion) |
+| `,` | Normal | Previous match (after f/t motion) |
+
+## LSP (Language Server Protocol)
+
+These keybindings are active when an LSP server is attached to the buffer.
+
+### Code navigation
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `gR` | Normal | Show LSP references (via Telescope) |
+| `gd` | Normal | Go to declaration/definition |
+| `gi` | Normal | Show LSP implementations (via Telescope) |
+| `gt` | Normal | Show LSP type definitions (via Telescope) |
+| `K` | Normal | Show documentation for what is under cursor |
+
+### Code actions and diagnostics
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader>ca` | Normal, Visual | See available code actions |
+| `<leader>rn` | Normal | Smart rename symbol |
+| `<leader>D` | Normal | Show buffer diagnostics (via Telescope) |
+| `<leader>d` | Normal | Show line diagnostics in floating window |
+| `[d` | Normal | Go to previous diagnostic |
+| `]d` | Normal | Go to next diagnostic |
+| `<leader>rs` | Normal | Restart LSP server |
+
+### Diagnostics
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader>xx` | Normal | Toggle Trouble diagnostics panel |
+
+## Code completion
+
+### Nvim-cmp completion menu
+
+These keybindings work when the completion menu is open:
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<C-k>` | Insert | Select previous suggestion |
+| `<C-j>` | Insert | Select next suggestion |
+| `<C-b>` | Insert | Scroll documentation up |
+| `<C-f>` | Insert | Scroll documentation down |
+| `<C-Space>` | Insert | Show completion suggestions |
+| `<C-e>` | Insert | Close completion window |
+| `<CR>` | Insert | Confirm selection |
+| `<Tab>` | Insert | Next suggestion or expand/jump snippet |
+
+## Formatting
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader>mp` | Normal, Visual | Format file or range (in visual mode) |
+
+## Git integration
+
+### Neogit
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader>gg` | Normal | Open Neogit (floating window) |
+
+### Diffview
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader>dd` | Normal | Open diff view |
+| `<leader>df` | Normal | Close diff view |
+| `<leader>ds` | Normal | Open branch diff view (origin/main...HEAD) |
+
+## Tips
+
+<Tip>
+You can always search for available keybindings by pressing `<leader>fk` to open Telescope's keymap finder.
+</Tip>
+
+<Note>
+Some plugins like nvim-tree and Neogit have their own keybindings that work within their windows. Press `g?` inside these windows to see their help.
+</Note>

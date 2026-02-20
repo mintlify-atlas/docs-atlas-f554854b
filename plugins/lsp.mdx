@@ -1,0 +1,181 @@
+---
+title: LSP configuration
+description: Language server protocol setup with Mason, language servers, and keybindings
+---
+
+nvim-luffy provides a comprehensive LSP setup with automatic server installation, intelligent completions, and intuitive keybindings.
+
+## Overview
+
+The LSP configuration uses three main components:
+
+- **nvim-lspconfig** - Configures language servers
+- **mason.nvim** - Installs and manages LSP servers
+- **mason-lspconfig** - Bridges Mason and lspconfig
+
+## Installed language servers
+
+The following language servers are automatically installed via Mason:
+
+<Tabs>
+  <Tab title="Web development">
+    - **ts_ls** - TypeScript/JavaScript
+    - **html** - HTML
+    - **cssls** - CSS
+    - **tailwindcss** - Tailwind CSS
+    - **svelte** - Svelte
+    - **emmet_ls** - Emmet abbreviations
+    - **graphql** - GraphQL
+    - **eslint** - JavaScript linting
+  </Tab>
+  <Tab title="Backend">
+    - **lua_ls** - Lua
+    - **pyright** - Python
+    - **prismals** - Prisma ORM
+  </Tab>
+</Tabs>
+
+## Mason configuration
+
+Mason is configured with a clean UI and automatic installation:
+
+```lua lua/leyland/plugins/lsp/mason.lua
+return {
+  {
+    "williamboman/mason-lspconfig.nvim",
+    opts = {
+      ensure_installed = {
+        "ts_ls",
+        "html",
+        "cssls",
+        "tailwindcss",
+        "svelte",
+        "lua_ls",
+        "graphql",
+        "emmet_ls",
+        "prismals",
+        "pyright",
+        "eslint",
+      },
+    },
+  },
+}
+```
+
+<Note>
+  LSP servers are automatically installed on first startup. You can manually manage servers with `:Mason`.
+</Note>
+
+## Formatters and linters
+
+The following tools are automatically installed via mason-tool-installer:
+
+- **prettier** - JavaScript/TypeScript/CSS/HTML formatter
+- **stylua** - Lua formatter
+- **isort** - Python import sorter
+- **black** - Python formatter
+- **pylint** - Python linter
+- **eslint_d** - Fast ESLint daemon
+
+## LSP keybindings
+
+These keybindings are automatically set when an LSP server attaches to a buffer:
+
+### Navigation
+
+| Key | Action | Description |
+|-----|--------|-------------|
+| `gR` | Show references | Find all references with Telescope |
+| `gd` | Go to definition | Jump to symbol definition |
+| `gi` | Show implementations | Find implementations with Telescope |
+| `gt` | Show type definitions | Find type definitions with Telescope |
+| `K` | Show documentation | Display hover documentation |
+
+### Diagnostics
+
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>d` | Show line diagnostics | Open diagnostic float for current line |
+| `<leader>D` | Show buffer diagnostics | List all diagnostics in current buffer |
+| `[d` | Previous diagnostic | Jump to previous diagnostic |
+| `]d` | Next diagnostic | Jump to next diagnostic |
+| `<leader>xx` | Toggle Trouble | Open diagnostics list with Trouble |
+
+### Code actions
+
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>ca` | Code action | Show available code actions |
+| `<leader>rn` | Rename symbol | Smart rename across project |
+| `<leader>mp` | Format | Format file or selection |
+
+### LSP management
+
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>rs` | Restart LSP | Restart language server |
+
+## LSP features
+
+<Accordion title="Autocompletion">
+  LSP servers provide intelligent completions through nvim-cmp. See the [completion](/plugins/completion) page for details.
+</Accordion>
+
+<Accordion title="Diagnostics display">
+  Diagnostics are displayed with custom signs in the sign column:
+  
+  -  Errors
+  -  Warnings
+  - 󰠠 Hints
+  -  Info
+  
+  Only errors are underlined by default to reduce visual noise.
+</Accordion>
+
+<Accordion title="File operations">
+  The nvim-lsp-file-operations plugin automatically updates imports when you rename or move files in nvim-tree.
+</Accordion>
+
+<Accordion title="Lua development">
+  The lazydev plugin provides enhanced Neovim Lua API completions and documentation.
+</Accordion>
+
+## Formatting
+
+Code formatting is handled by conform.nvim with format-on-save enabled:
+
+```lua lua/leyland/plugins/formatting.lua
+formatters_by_ft = {
+  javascript = { "prettier" },
+  typescript = { "prettier" },
+  javascriptreact = { "prettier" },
+  typescriptreact = { "prettier" },
+  svelte = { "prettier" },
+  css = { "prettier" },
+  html = { "prettier" },
+  json = { "prettier" },
+  yaml = { "prettier" },
+  markdown = { "prettier" },
+  graphql = { "prettier" },
+  lua = { "stylua" },
+  python = { "isort", "black" },
+}
+```
+
+## Managing LSP servers
+
+<Steps>
+  <Step title="Open Mason">
+    Run `:Mason` to open the server management interface
+  </Step>
+  <Step title="Install/uninstall servers">
+    Navigate with `j`/`k` and press `i` to install or `X` to uninstall
+  </Step>
+  <Step title="Update servers">
+    Press `U` to update all installed servers
+  </Step>
+</Steps>
+
+<Tip>
+  Use `:LspInfo` to see which servers are attached to the current buffer and their status.
+</Tip>

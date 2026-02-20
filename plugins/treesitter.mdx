@@ -1,0 +1,200 @@
+---
+title: Treesitter
+description: Advanced syntax highlighting and code understanding with nvim-treesitter
+---
+
+Treesitter provides superior syntax highlighting and code analysis by parsing your code into an abstract syntax tree.
+
+## Features
+
+- Precise syntax highlighting
+- Code-aware text objects
+- Automatic language detection
+- Incremental parsing for performance
+
+## Configuration
+
+Treesitter is configured to automatically install and enable parsers for common languages:
+
+```lua lua/leyland/plugins/treesitter.lua
+return {
+  "nvim-treesitter/nvim-treesitter",
+  event = { "BufReadPre", "BufNewFile" },
+  build = ":TSUpdate",
+  config = function()
+    require("nvim-treesitter").setup({
+      ensure_installed = {
+        "json",
+        "javascript",
+        "typescript",
+        "tsx",
+        "yaml",
+        "html",
+        "css",
+        "prisma",
+        "markdown",
+        "markdown_inline",
+        "svelte",
+        "graphql",
+        "bash",
+        "lua",
+        "vim",
+        "dockerfile",
+        "gitignore",
+        "query",
+        "vimdoc",
+        "c",
+      },
+    })
+  end,
+}
+```
+
+## Supported languages
+
+<Tabs>
+  <Tab title="Web">
+    - JavaScript
+    - TypeScript
+    - TSX (React)
+    - HTML
+    - CSS
+    - Svelte
+    - GraphQL
+  </Tab>
+  <Tab title="Backend">
+    - Lua
+    - Python (via LSP)
+    - Bash
+    - C
+  </Tab>
+  <Tab title="Data">
+    - JSON
+    - YAML
+    - Prisma
+  </Tab>
+  <Tab title="Documentation">
+    - Markdown
+    - Vim help files
+    - Dockerfile
+    - Gitignore
+  </Tab>
+</Tabs>
+
+<Note>
+  Parsers are automatically installed when you first open a file of each type. You can manually install parsers with `:TSInstall <language>`.
+</Note>
+
+## Treesitter features
+
+### Syntax highlighting
+
+Treesitter provides semantic syntax highlighting based on the actual structure of your code, not just regex patterns. This means:
+
+- More accurate highlighting
+- Better distinction between different code elements
+- Context-aware coloring
+
+<Accordion title="Comparison with regex-based highlighting">
+  Traditional syntax highlighting uses regex patterns that can be fooled by complex code structures. Treesitter parses the entire file into an AST, ensuring:
+  
+  - Variables are colored consistently
+  - String interpolation is handled correctly
+  - Nested structures are properly highlighted
+  - Language-specific features are recognized
+</Accordion>
+
+### Language injection
+
+Treesitter understands embedded languages in your code:
+
+- JavaScript/TypeScript in HTML `<script>` tags
+- CSS in HTML `<style>` tags
+- SQL in string literals (when configured)
+- Code blocks in Markdown
+
+### Custom language mappings
+
+The configuration includes a custom mapping for Zsh:
+
+```lua
+vim.treesitter.language.register("bash", "zsh")
+```
+
+This tells Treesitter to use the Bash parser for Zsh files, providing syntax highlighting for shell scripts.
+
+## Managing parsers
+
+<Steps>
+  <Step title="Check installed parsers">
+    Run `:TSInstallInfo` to see all available and installed parsers
+  </Step>
+  <Step title="Install a parser">
+    Use `:TSInstall <language>` to manually install a parser
+    
+    ```vim
+    :TSInstall python
+    ```
+  </Step>
+  <Step title="Update parsers">
+    Run `:TSUpdate` to update all installed parsers to the latest version
+  </Step>
+  <Step title="Uninstall a parser">
+    Use `:TSUninstall <language>` to remove a parser
+  </Step>
+</Steps>
+
+## Integration with other plugins
+
+### Flash.nvim
+
+Flash uses Treesitter for intelligent text selection:
+
+```vim
+" Select entire function
+S
+" Then select treesitter node
+<C-space>
+```
+
+### nvim-autopairs
+
+Autopairs uses Treesitter to avoid auto-pairing in certain contexts:
+
+- No auto-pairs in Lua strings
+- No auto-pairs in JavaScript template strings
+- Context-aware bracket insertion
+
+### LSP
+
+Treesitter complements LSP by providing:
+
+- Syntax highlighting (LSP provides semantic tokens)
+- Fallback parsing when LSP is unavailable
+- Faster initial highlighting on file open
+
+## Treesitter commands
+
+| Command | Description |
+|---------|-------------|
+| `:TSInstallInfo` | List all parsers and their status |
+| `:TSInstall <lang>` | Install a language parser |
+| `:TSUpdate` | Update all installed parsers |
+| `:TSUninstall <lang>` | Uninstall a parser |
+| `:TSBufToggle highlight` | Toggle highlighting for current buffer |
+
+<Tip>
+  If you notice incorrect highlighting, try running `:TSUpdate` to ensure you have the latest parser version.
+</Tip>
+
+## Performance
+
+Treesitter is configured for optimal performance:
+
+- **Lazy loading** - Only loads when opening files (`BufReadPre`, `BufNewFile`)
+- **Incremental parsing** - Only re-parses changed portions of the file
+- **Async parsing** - Doesn't block the editor while parsing large files
+
+<Warning>
+  Very large files (>10,000 lines) may experience slower highlighting. You can disable Treesitter for specific buffers with `:TSBufDisable highlight`.
+</Warning>

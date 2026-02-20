@@ -1,80 +1,385 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quickstart
+description: Get up to speed with nvim-luffy in 5 minutes - learn the essential keybindings and workflows
 ---
 
-## Get started in three steps
+## Welcome to nvim-luffy
 
-Get your documentation site running locally and make your first customization.
+This guide will get you productive with nvim-luffy quickly. You'll learn the most important keybindings and workflows to start coding efficiently.
 
-### Step 1: Set up your local environment
+<Note>
+  All keybindings use `<Space>` as the leader key. We'll write it as `<Space>` in this guide, but you just press the spacebar.
+</Note>
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
+## The Alpha dashboard
+
+When you first open Neovim (or open it without a file), you'll see the Alpha dashboard featuring Luffy's Gear 5 ASCII art and the quote: *"Maybe the One Piece was the commits you made along the way."*
+
+The dashboard provides quick access to common actions:
+
+- **f** - Find file (opens Telescope file finder)
+- **r** - Recent files (shows your recently opened files)
+- **q** - Quit Neovim
+
+You can simply press these keys to trigger the action, or navigate with `j`/`k` and press `Enter`.
+
+<Tip>
+  From the Alpha dashboard, the fastest way to start working is to press `f` and start typing a filename.
+</Tip>
+
+## Essential keybindings
+
+### File navigation
+
+These are your most-used keybindings:
+
+<CardGroup cols={2}>
+  <Card title="Find files" icon="magnifying-glass">
+    `<Space><Space>`
     
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
+    Opens Telescope to fuzzy-find files in your current directory. Start typing to filter.
+  </Card>
+  
+  <Card title="Recent files" icon="clock-rotate-left">
+    `<Space>fr`
     
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
+    Shows files you've recently opened. Quick way to jump back to your work.
+  </Card>
+  
+  <Card title="Live grep" icon="text-size">
+    `<Space>/`
     
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+    Search for text across all files in your project. Results update as you type.
+  </Card>
+  
+  <Card title="File explorer" icon="folder-tree">
+    `<Space>e`
+    
+    Toggles nvim-tree file explorer on the right side of your screen.
+  </Card>
+</CardGroup>
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+### Harpoon navigation
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+Harpoon is a powerful feature for quick file switching. Think of it as marking your most important files:
 
-### Step 3: Go live
+```lua lua/leyland/plugins/harpoon.lua
+-- Mark current file
+<Space>H
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+-- Open Harpoon menu
+<Space>h
+
+-- Jump to specific files
+<Space>1  -- Jump to first harpooned file
+<Space>2  -- Jump to second harpooned file
+<Space>3  -- Jump to third harpooned file
+... up to <Space>9
+```
+
+<Steps>
+  <Step title="Mark your important files">
+    Open a file and press `<Space>H` (capital H) to add it to Harpoon.
+    
+    Mark 3-4 files you're actively working on.
+  </Step>
+  
+  <Step title="Use the quick menu">
+    Press `<Space>h` to see all your harpooned files in a menu.
+    
+    Navigate with `j`/`k` and press `Enter` to open a file.
+  </Step>
+  
+  <Step title="Jump directly">
+    Once files are harpooned, use `<Space>1`, `<Space>2`, etc. to jump instantly to that file.
+    
+    This is much faster than searching for files!
+  </Step>
+</Steps>
+
+### Buffer management
+
+```lua lua/leyland/core/keymaps.lua
+-- Close current buffer
+<Space>bd
+
+-- Close all buffers
+<Space>ba
+```
+
+### Window management
+
+```lua lua/leyland/core/keymaps.lua
+-- Split window vertically
+<Space>|
+
+-- Split window horizontally  
+<Space>sh
+
+-- Navigate between windows
+<C-h>  -- Move to left window
+<C-l>  -- Move to right window
+<C-j>  -- Move to bottom window
+<C-k>  -- Move to top window
+```
+
+<Tip>
+  The `Ctrl+h/j/k/l` navigation works seamlessly with tmux thanks to the vim-tmux-navigator plugin.
+</Tip>
+
+## Working with Telescope
+
+Telescope is your primary tool for finding files and text. Here's how to use it effectively:
+
+### In the Telescope prompt
+
+<ResponseField name="Ctrl+j / Ctrl+k" type="navigation">
+  Move between results (alternative to arrow keys)
+</ResponseField>
+
+<ResponseField name="Enter" type="action">
+  Open the selected file
+</ResponseField>
+
+<ResponseField name="Ctrl+q" type="action">
+  Send selected results to quickfix list
+</ResponseField>
+
+<ResponseField name="Esc" type="action">
+  Close Telescope
+</ResponseField>
+
+### Telescope keybindings reference
+
+```lua lua/leyland/plugins/telescope.lua
+<Space><Space>  -- Find files
+<Space>fr       -- Recent files (oldfiles)
+<Space>/        -- Live grep (search in files)
+<Space>fc       -- Find string under cursor
+<Space>ft       -- Find TODO comments
+<Space>fk       -- Find keymaps
+```
+
+<Info>
+  Telescope uses fuzzy finding, so you don't need to type the exact filename. For example, typing "usrctl" will find "UserController.ts".
+</Info>
+
+## Working with the file explorer
+
+Press `<Space>e` to toggle nvim-tree on the right side:
+
+### File explorer navigation
+
+```lua lua/leyland/plugins/nvim-tree.lua
+l or Enter  -- Open file or expand directory
+h           -- Close directory or go to parent
+j/k         -- Navigate up/down
+a           -- Create new file
+d           -- Delete file
+r           -- Rename file
+x           -- Cut file
+c           -- Copy file  
+p           -- Paste file
+R           -- Refresh tree
+q           -- Close explorer
+```
+
+<Tip>
+  The explorer uses `h` and `l` for navigation (vim-style), making it intuitive if you're familiar with vim motions.
+</Tip>
+
+## LSP features
+
+nvim-luffy comes with full LSP integration. Open any supported file (JavaScript, TypeScript, Python, Lua, etc.) and you'll automatically get:
+
+### Automatic features
+
+- **Diagnostics** - Errors and warnings appear inline with virtual text
+- **Completion** - Start typing and suggestions appear automatically
+- **Signature help** - Function parameter hints as you type
+- **Auto-formatting** - Code formats automatically on save
+
+### LSP keybindings
+
+These are available when an LSP is attached to your buffer:
+
+<CodeGroup>
+
+```lua Navigation
+gd  -- Go to definition
+gr  -- Go to references  
+gi  -- Go to implementation
+```
+
+```lua Documentation
+K   -- Show hover documentation
+```
+
+```lua Code actions
+<Space>ca  -- Code actions
+<Space>rn  -- Rename symbol
+```
+
+</CodeGroup>
+
+<Note>
+  LSP keybindings are set up automatically in `lua/leyland/plugins/lsp/lsp.lua` when a language server attaches to your buffer.
+</Note>
+
+## Completion
+
+The completion menu appears automatically as you type in insert mode:
+
+```lua lua/leyland/plugins/nvim-cmp.lua
+-- Navigation in completion menu
+Ctrl+j       -- Next suggestion
+Ctrl+k       -- Previous suggestion
+Tab          -- Next suggestion (or expand snippet)
+Enter        -- Confirm selection
+Ctrl+Space   -- Manually trigger completion
+Ctrl+e       -- Close completion menu
+
+-- Documentation scrolling
+Ctrl+f       -- Scroll docs down
+Ctrl+b       -- Scroll docs up
+```
+
+### Completion sources
+
+Completions come from multiple sources:
+
+1. **LSP** - Intelligent code suggestions from language servers
+2. **LuaSnip** - Code snippets
+3. **Buffer** - Words from the current file
+4. **Path** - File system paths
+
+## Flash.nvim - Enhanced motion
+
+Flash provides lightning-fast navigation within files:
+
+```lua lua/leyland/plugins/flash.lua
+s            -- Flash jump (2-character search)
+S            -- Flash treesitter (select syntax nodes)  
+Ctrl+Space   -- Incremental treesitter selection
+
+-- In operator-pending mode
+r            -- Remote flash
+R            -- Treesitter search
+```
+
+<Steps>
+  <Step title="Press s in normal mode">
+    Flash.nvim activates and highlights potential jump locations.
+  </Step>
+  
+  <Step title="Type two characters">
+    Type the two characters where you want to jump.
+    
+    Labels appear on matching locations.
+  </Step>
+  
+  <Step title="Press the label key">
+    Press the highlighted label key to jump instantly to that location.
+  </Step>
+</Steps>
+
+<Tip>
+  Flash is much faster than using `w`, `b`, `f`, or `/` for navigation once you get used to it.
+</Tip>
+
+## Quick reference card
+
+### Most important keybindings
+
+| Keybinding | Action | Context |
+|------------|--------|----------|
+| `<Space><Space>` | Find files | Normal |
+| `<Space>/` | Search text | Normal |
+| `<Space>e` | Toggle file explorer | Normal |
+| `<Space>h` | Harpoon menu | Normal |
+| `<Space>H` | Add to Harpoon | Normal |
+| `<Space>1-9` | Jump to Harpoon file | Normal |
+| `gd` | Go to definition | LSP |
+| `K` | Show documentation | LSP |
+| `s` | Flash jump | Normal |
+| `<Space>\|` | Split vertically | Normal |
+| `<Space>bd` | Close buffer | Normal |
+
+### Telescope operations
+
+| Keybinding | Action |
+|------------|--------|
+| `<Space><Space>` | Find files |
+| `<Space>fr` | Recent files |
+| `<Space>/` | Live grep |
+| `<Space>fc` | Find word under cursor |
+| `<Space>ft` | Find TODOs |
+| `<Space>fk` | Find keymaps |
 
 ## Next steps
 
-Now that you have your docs running, explore these key features:
+Now that you know the basics, explore more advanced features:
 
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card
+    title="Configuration"
+    icon="gear"
+    href="/configuration/options"
+  >
+    Learn about options, keymaps, and autocommands
+  </Card>
+  
+  <Card
+    title="Plugin deep dive"
+    icon="puzzle-piece"
+    href="/plugins/overview"
+  >
+    Understand each plugin and its configuration
+  </Card>
+  
+  <Card
+    title="Customize themes"
+    icon="palette"
+    href="/customization/themes"
+  >
+    Switch between colorschemes or customize colors
+  </Card>
+  
+  <Card
+    title="Keymap cheatsheet"
+    icon="keyboard"
+    href="/reference/keymap-cheatsheet"
+  >
+    Complete reference of all keybindings
+  </Card>
 </CardGroup>
 
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>
+## Tips for success
+
+<AccordionGroup>
+  <Accordion title="Start with the essentials">
+    Focus on mastering these keybindings first:
+    - `<Space><Space>` for finding files
+    - `<Space>/` for searching text
+    - `<Space>e` for file explorer
+    - `gd` for go-to-definition
+    
+    Once these become muscle memory, you'll be incredibly productive.
+  </Accordion>
+
+  <Accordion title="Use Harpoon for active files">
+    Don't try to remember file paths or search repeatedly. Mark your 3-4 active files with Harpoon and use `<Space>1-4` to jump between them instantly.
+  </Accordion>
+
+  <Accordion title="Learn one plugin at a time">
+    Don't try to learn everything at once. Spend a day getting comfortable with Telescope, then add Harpoon to your workflow, then explore LSP features.
+  </Accordion>
+
+  <Accordion title="Check keymaps anytime">
+    Forgot a keybinding? Press `<Space>fk` to open Telescope's keymap finder and search for what you need.
+  </Accordion>
+
+  <Accordion title="Run :checkhealth regularly">
+    If something doesn't work as expected, run `:checkhealth` to diagnose issues with your setup.
+  </Accordion>
+</AccordionGroup>

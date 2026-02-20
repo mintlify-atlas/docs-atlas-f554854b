@@ -1,0 +1,433 @@
+---
+title: Adding plugins
+description: Extend nvim-luffy with new plugins using lazy.nvim plugin manager
+---
+
+## How plugin management works
+
+nvim-luffy uses [lazy.nvim](https://github.com/folke/lazy.nvim) as its plugin manager. It's fast, modern, and provides lazy-loading capabilities to keep Neovim snappy.
+
+### Plugin structure
+
+Plugins are organized in the `lua/leyland/plugins/` directory:
+
+```
+lua/leyland/plugins/
+├── init.lua              # Simple plugins without much config
+├── colorscheme.lua       # Theme plugins
+├── telescope.lua         # Telescope fuzzy finder
+├── nvim-tree.lua        # File explorer
+├── nvim-cmp.lua         # Autocompletion
+└── lsp/                 # LSP-related plugins
+    └── ...
+```
+
+The main plugin loader is in `lua/leyland/lazy.lua`, which imports all plugin configurations:
+
+```lua lua/leyland/lazy.lua
+require("lazy").setup({
+  { import = "leyland.plugins" },
+  { import = "leyland.plugins.lsp" }
+}, {
+  checker = {
+    enabled = true,
+    notify = false,
+  },
+  change_detection = {
+    notify = false,
+  },
+})
+```
+
+<Tip>
+The `import` statements tell lazy.nvim to automatically load all Lua files in those directories as plugin specifications.
+</Tip>
+
+## Adding a simple plugin
+
+For plugins that don't require much configuration, you can add them to `lua/leyland/plugins/init.lua`.
+
+<Steps>
+  <Step title="Open init.lua">
+    Navigate to `lua/leyland/plugins/init.lua` in your configuration directory.
+  </Step>
+  
+  <Step title="Add the plugin">
+    Add a new string entry with the plugin's GitHub repository:
+    
+    ```lua lua/leyland/plugins/init.lua
+    return {
+      "nvim-lua/plenary.nvim",
+      "christoomey/vim-tmux-navigator",
+      "tpope/vim-surround", -- Add this line
+    }
+    ```
+  </Step>
+  
+  <Step title="Install the plugin">
+    Restart Neovim or run `:Lazy sync` to install the plugin.
+  </Step>
+  
+  <Step title="Verify installation">
+    Run `:Lazy` to open the lazy.nvim UI and verify your plugin appears in the list.
+  </Step>
+</Steps>
+
+## Adding a plugin with configuration
+
+For plugins that need setup or keybindings, create a dedicated configuration file.
+
+<Steps>
+  <Step title="Create a new plugin file">
+    Create a new file in `lua/leyland/plugins/` with a descriptive name. For example, let's add the "Comment.nvim" plugin:
+    
+    ```bash
+    touch lua/leyland/plugins/comment.lua
+    ```
+  </Step>
+  
+  <Step title="Define the plugin specification">
+    Open the new file and add the plugin configuration:
+    
+    ```lua lua/leyland/plugins/comment.lua
+    return {
+      "numToStr/Comment.nvim",
+      event = { "BufReadPre", "BufNewFile" },
+      config = function()
+        local comment = require("Comment")
+        
+        comment.setup({
+          -- Configuration options
+          padding = true,
+          sticky = true,
+          toggler = {
+            line = "gcc",
+            block = "gbc",
+          },
+        })
+      end,
+    }
+    ```
+  </Step>
+  
+  <Step title="Install and test">
+    Save the file and run `:Lazy sync`. The plugin will be automatically imported and installed.
+  </Step>
+</Steps>
+
+<Tip>
+No need to modify `lazy.lua`! Any Lua file you create in the `plugins/` directory is automatically imported thanks to the `{ import = "leyland.plugins" }` statement.
+</Tip>
+
+## Plugin specification options
+
+Here are the most common options you'll use in plugin specifications:
+
+### Basic structure
+
+```lua
+return {
+  "author/plugin-name",     -- GitHub repository (required)
+  name = "custom-name",      -- Custom plugin name (optional)
+  branch = "main",           -- Git branch (default: main/master)
+  tag = "v1.0.0",           -- Specific version tag
+  commit = "abc123",         -- Specific commit hash
+}
+```
+
+### Dependencies
+
+Specify other plugins that must be loaded first:
+
+```lua
+return {
+  "nvim-telescope/telescope.nvim",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "nvim-tree/nvim-web-devicons",
+    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+  },
+}
+```
+
+### Lazy loading
+
+Improve startup time by loading plugins only when needed:
+
+<CodeGroup>
+```lua Load on event
+return {
+  "lewis6991/gitsigns.nvim",
+  event = { "BufReadPre", "BufNewFile" },
+  config = function()
+    require("gitsigns").setup()
+  end,
+}
+```
+
+```lua Load on keypress
+return {
+  "nvim-tree/nvim-tree.lua",
+  keys = {
+    { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "Toggle file tree" },
+  },
+  config = function()
+    require("nvim-tree").setup()
+  end,
+}
+```
+
+```lua Load on command
+return {
+  "folke/zen-mode.nvim",
+  cmd = "ZenMode",
+  config = function()
+    require("zen-mode").setup()
+  end,
+}
+```
+
+```lua Load on filetype
+return {
+  "iamcco/markdown-preview.nvim",
+  ft = "markdown",
+  build = "cd app && npm install",
+}
+```
+</CodeGroup>
+
+### Configuration
+
+The `config` function runs when the plugin loads:
+
+```lua
+return {
+  "nvim-telescope/telescope.nvim",
+  config = function()
+    local telescope = require("telescope")
+    local actions = require("telescope.actions")
+    
+    telescope.setup({
+      defaults = {
+        mappings = {
+          i = {
+            ["<C-j>"] = actions.move_selection_next,
+            ["<C-k>"] = actions.move_selection_previous,
+          },
+        },
+      },
+    })
+    
+    -- Set keybindings
+    vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>")
+  end,
+}
+```
+
+For simple configs, use `config = true`:
+
+```lua
+return {
+  "windwp/nvim-autopairs",
+  event = "InsertEnter",
+  config = true,  -- Calls require("nvim-autopairs").setup()
+}
+```
+
+### Build commands
+
+Some plugins need to run build commands after installation:
+
+```lua
+return {
+  "nvim-telescope/telescope-fzf-native.nvim",
+  build = "make",
+}
+```
+
+### Priority
+
+Control load order (higher numbers load first):
+
+```lua
+return {
+  "catppuccin/nvim",
+  name = "catppuccin",
+  priority = 1000,  -- Load colorscheme early
+  config = function()
+    vim.cmd.colorscheme("catppuccin")
+  end,
+}
+```
+
+## Real-world examples
+
+Here are some complete examples from nvim-luffy:
+
+### Example 1: File explorer with custom keybindings
+
+```lua lua/leyland/plugins/nvim-tree.lua
+return {
+  "nvim-tree/nvim-tree.lua",
+  dependencies = "nvim-tree/nvim-web-devicons",
+  keys = {
+    { "<leader>e", "<cmd>NvimTreeFindFileToggle<cr>", desc = "Toggle file explorer" },
+  },
+  config = function()
+    local nvimtree = require("nvim-tree")
+    
+    nvimtree.setup({
+      view = {
+        width = 50,
+        relativenumber = true,
+        side = "right",
+      },
+      renderer = {
+        indent_markers = {
+          enable = true,
+        },
+      },
+      filters = {
+        custom = { ".DS_Store" },
+      },
+      git = {
+        ignore = false,
+      },
+    })
+  end,
+}
+```
+
+### Example 2: Multiple colorschemes
+
+```lua lua/leyland/plugins/colorscheme.lua
+return {
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+  },
+  {
+    "folke/tokyonight.nvim",
+    priority = 1000,
+  },
+  {
+    "ribru17/bamboo.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.cmd.colorscheme("bamboo")
+    end,
+  },
+}
+```
+
+### Example 3: Minimal plugins
+
+```lua lua/leyland/plugins/init.lua
+return {
+  "nvim-lua/plenary.nvim",              -- Lua utility functions
+  "christoomey/vim-tmux-navigator",     -- Tmux integration
+}
+```
+
+## Finding plugins
+
+Here are some resources for discovering Neovim plugins:
+
+- [Awesome Neovim](https://github.com/rockerBOO/awesome-neovim) - Curated list of Neovim plugins
+- [Neovim Discourse](https://neovim.discourse.group/) - Community discussions
+- [r/neovim](https://reddit.com/r/neovim) - Reddit community
+- [dotfyle](https://dotfyle.com/) - Neovim plugin search and config sharing
+
+<Warning>
+Always check a plugin's README for specific installation and configuration instructions. Some plugins may have additional requirements like external dependencies.
+</Warning>
+
+## Managing plugins with lazy.nvim
+
+Use these commands to manage your plugins:
+
+| Command | Description |
+|---------|-------------|
+| `:Lazy` | Open the lazy.nvim UI |
+| `:Lazy sync` | Install missing plugins and update existing ones |
+| `:Lazy install` | Install missing plugins |
+| `:Lazy update` | Update all plugins |
+| `:Lazy clean` | Remove unused plugins |
+| `:Lazy check` | Check for plugin updates |
+| `:Lazy log` | Show recent plugin updates |
+| `:Lazy profile` | Profile plugin loading times |
+
+<Tip>
+Run `:Lazy profile` to see which plugins are slowing down your startup time. Use lazy-loading options to improve performance.
+</Tip>
+
+## Troubleshooting
+
+### Plugin not loading
+
+1. Check that the file returns a table: `return { ... }`
+2. Verify the GitHub repository name is correct
+3. Run `:Lazy sync` to install the plugin
+4. Check `:Lazy` UI for any error messages
+
+### Plugin errors on startup
+
+1. Read the error message carefully - it usually points to the issue
+2. Check the plugin's documentation for required dependencies
+3. Verify your configuration matches the plugin's expected setup
+4. Try temporarily disabling the plugin to confirm it's the source
+
+### Plugin conflicts
+
+If two plugins conflict:
+
+1. Check if they provide similar functionality (e.g., two file explorers)
+2. Disable one by adding `enabled = false` to its specification
+3. Use lazy-loading to load them conditionally
+
+```lua
+return {
+  "plugin/name",
+  enabled = false,  -- Temporarily disable
+}
+```
+
+## Best practices
+
+<AccordionGroup>
+  <Accordion title="One plugin per file for complex configs">
+    If a plugin needs more than basic setup, give it its own file in `lua/leyland/plugins/`. This keeps your configuration organized and easy to navigate.
+  </Accordion>
+  
+  <Accordion title="Use lazy-loading when possible">
+    Load plugins only when needed using `event`, `keys`, `cmd`, or `ft` options. This significantly improves startup time.
+  </Accordion>
+  
+  <Accordion title="Add descriptive comments">
+    Comment your plugin configurations to explain non-obvious settings. Your future self will thank you.
+  </Accordion>
+  
+  <Accordion title="Pin important versions">
+    For critical plugins, consider pinning to specific tags or commits to prevent breaking changes:
+    ```lua
+    { "plugin/name", tag = "v1.0.0" }
+    ```
+  </Accordion>
+  
+  <Accordion title="Group related plugins">
+    Keep related plugins together in the same file (e.g., all LSP plugins in the `lsp/` directory).
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Plugin configuration" icon="gear" href="/customization/plugin-configuration">
+    Learn how to customize existing plugins
+  </Card>
+  <Card title="Keybindings" icon="keyboard" href="/customization/keybindings">
+    Add custom keybindings for your plugins
+  </Card>
+</CardGroup>

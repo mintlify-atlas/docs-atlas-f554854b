@@ -1,0 +1,107 @@
+---
+title: Plugin overview
+description: Comprehensive overview of all plugins included in nvim-luffy
+---
+
+nvim-luffy comes packed with carefully selected plugins to enhance your development experience. Each plugin is configured to work seamlessly with the One Piece theme while providing powerful functionality.
+
+## Core functionality
+
+<CardGroup cols={2}>
+  <Card title="LSP configuration" icon="code" href="/plugins/lsp">
+    Language server protocol support with Mason for easy server management
+  </Card>
+  <Card title="Telescope" icon="magnifying-glass" href="/plugins/telescope">
+    Fuzzy finder for files, text, and more
+  </Card>
+  <Card title="Treesitter" icon="tree" href="/plugins/treesitter">
+    Advanced syntax highlighting and code understanding
+  </Card>
+  <Card title="Completion" icon="keyboard" href="/plugins/completion">
+    Intelligent code completion with nvim-cmp and snippets
+  </Card>
+</CardGroup>
+
+## Navigation and file management
+
+<CardGroup cols={2}>
+  <Card title="File explorer" icon="folder" href="/plugins/file-explorer">
+    Navigate your project with nvim-tree and Harpoon
+  </Card>
+  <Card title="Git integration" icon="git" href="/plugins/git-integration">
+    Seamless Git workflow with Neogit and Diffview
+  </Card>
+</CardGroup>
+
+## User interface
+
+<CardGroup cols={2}>
+  <Card title="UI enhancements" icon="sparkles" href="/plugins/ui-enhancements">
+    Beautiful dashboard, colorschemes, and visual improvements
+  </Card>
+</CardGroup>
+
+## Plugin management
+
+nvim-luffy uses [lazy.nvim](https://github.com/folke/lazy.nvim) for plugin management, providing:
+
+- Fast startup times with lazy loading
+- Automatic plugin installation
+- Easy plugin updates
+- Minimal configuration overhead
+
+<Note>
+  All plugins are configured in `lua/leyland/plugins/` with lazy loading enabled where appropriate to maintain fast startup times.
+</Note>
+
+## Installed plugins
+
+Here's the complete list of plugins by category:
+
+### Development
+
+- **nvim-lspconfig** - LSP client configurations
+- **mason.nvim** - LSP server installer
+- **mason-lspconfig.nvim** - Bridge between Mason and lspconfig
+- **mason-tool-installer.nvim** - Automatic tool installation
+- **nvim-cmp** - Completion engine
+- **LuaSnip** - Snippet engine
+- **conform.nvim** - Code formatting
+- **nvim-treesitter** - Syntax highlighting
+
+### Navigation
+
+- **telescope.nvim** - Fuzzy finder
+- **nvim-tree.lua** - File explorer
+- **harpoon** - Quick file navigation
+- **flash.nvim** - Enhanced motion
+
+### Git
+
+- **neogit** - Git interface
+- **diffview.nvim** - Git diff viewer
+
+### UI
+
+- **alpha-nvim** - Dashboard
+- **snacks.nvim** - Smooth scrolling
+- **nvim-web-devicons** - File icons
+- **lspkind.nvim** - VS Code-like pictograms
+- **trouble.nvim** - Diagnostics list
+
+### Colorschemes
+
+- **catppuccin** - Pastel theme
+- **tokyonight.nvim** - Dark theme
+- **rose-pine** - Minimal theme
+- **bamboo.nvim** - Natural theme (default)
+- **modus-themes.nvim** - Accessible themes
+- **onedark.nvim** - Atom-inspired theme
+
+### Utilities
+
+- **plenary.nvim** - Lua utility functions
+- **nvim-autopairs** - Auto-close brackets
+- **todo-comments.nvim** - Highlight TODO comments
+- **vim-tmux-navigator** - Tmux integration
+- **lazydev.nvim** - Lua development tools

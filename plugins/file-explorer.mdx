@@ -1,0 +1,205 @@
+---
+title: File explorer
+description: Navigate your project with nvim-tree and jump between files with Harpoon
+---
+
+Two powerful tools for file navigation: nvim-tree for browsing your project structure and Harpoon for lightning-fast jumps between frequently used files.
+
+## nvim-tree
+
+nvim-tree is a file explorer that provides a visual tree view of your project.
+
+### Features
+
+- Git integration showing file status
+- File operations (create, delete, rename, move)
+- Split opening and tab support
+- Custom icons for different file types
+- Integration with LSP for automatic import updates
+
+### Configuration
+
+```lua lua/leyland/plugins/nvim-tree.lua
+nvimtree.setup({
+  view = {
+    width = 50,
+    relativenumber = true,
+    side = "right",
+  },
+  renderer = {
+    indent_markers = {
+      enable = true,
+    },
+  },
+  git = {
+    ignore = false,  -- Show ignored files
+  },
+})
+```
+
+<Note>
+  The tree opens on the right side with relative line numbers and a width of 50 columns.
+</Note>
+
+### Keybindings
+
+#### Global keybindings
+
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>e` | Toggle explorer | Open/close nvim-tree |
+
+#### Tree navigation
+
+When inside nvim-tree:
+
+<Tabs>
+  <Tab title="Navigation">
+    | Key | Action |
+    |-----|--------|
+    | `j` | Move down |
+    | `k` | Move up |
+    | `l` | Open file/folder |
+    | `h` | Close folder |
+    | `<CR>` | Open file |
+    | `P` | Jump to parent |
+  </Tab>
+  <Tab title="File operations">
+    | Key | Action |
+    |-----|--------|
+    | `a` | Create file/folder |
+    | `d` | Delete file/folder |
+    | `r` | Rename file/folder |
+    | `x` | Cut file/folder |
+    | `c` | Copy file/folder |
+    | `p` | Paste file/folder |
+  </Tab>
+  <Tab title="View">
+    | Key | Action |
+    |-----|--------|
+    | `R` | Refresh tree |
+    | `H` | Toggle hidden files |
+    | `I` | Toggle gitignored files |
+    | `?` | Show help |
+  </Tab>
+</Tabs>
+
+### File operations
+
+<Steps>
+  <Step title="Create a file">
+    Press `a` and type the filename. Add a trailing `/` to create a directory.
+  </Step>
+  <Step title="Rename a file">
+    Navigate to the file and press `r`. The LSP will automatically update imports.
+  </Step>
+  <Step title="Delete a file">
+    Navigate to the file and press `d`. Confirm the deletion.
+  </Step>
+  <Step title="Move files">
+    Press `x` to cut, navigate to destination, press `p` to paste.
+  </Step>
+</Steps>
+
+### Git integration
+
+nvim-tree shows Git status with icons:
+
+- ✓ Staged files
+- ✗ Deleted files
+- ● Modified files
+- ★ Untracked files
+- ⎇ Ignored files (when shown)
+
+<Accordion title="Git file operations">
+  When you rename or move files in nvim-tree, the nvim-lsp-file-operations plugin automatically updates imports in other files that reference the moved file.
+</Accordion>
+
+## Harpoon
+
+Harpoon is a file navigation tool for marking and quickly jumping between your most important files.
+
+### Concept
+
+Instead of searching for files or using a file tree, you "harpoon" files you're actively working on and jump between them instantly:
+
+1. Mark files you're working on
+2. Jump to marked files with number keys
+3. See all marked files in a quick menu
+
+### Configuration
+
+```lua lua/leyland/plugins/harpoon.lua
+return {
+  "ThePrimeagen/harpoon",
+  branch = "harpoon2",
+  opts = {
+    menu = {
+      width = vim.api.nvim_win_get_width(0) - 4,
+    },
+    settings = {
+      save_on_toggle = true,
+    },
+  },
+}
+```
+
+### Keybindings
+
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>H` | Add file | Mark current file with Harpoon |
+| `<leader>h` | Quick menu | Show all harpooned files |
+| `<leader>1` | Jump to file 1 | Jump to first marked file |
+| `<leader>2` | Jump to file 2 | Jump to second marked file |
+| `<leader>3` | Jump to file 3 | Jump to third marked file |
+| ... | ... | Up to `<leader>9` |
+
+### Workflow example
+
+<Steps>
+  <Step title="Mark your files">
+    Open a file you're working on and press `<leader>H` to harpoon it. Repeat for other files.
+  </Step>
+  <Step title="Jump between files">
+    Press `<leader>1`, `<leader>2`, etc. to instantly jump to your marked files.
+  </Step>
+  <Step title="Manage marks">
+    Press `<leader>h` to open the quick menu and reorder or remove marks.
+  </Step>
+</Steps>
+
+### Quick menu
+
+The Harpoon quick menu shows all your marked files:
+
+- Navigate with `j`/`k`
+- Press `<CR>` to jump to a file
+- Press `d` to remove a mark
+- Reorder files by cutting and pasting lines
+
+<Tip>
+  Harpoon is perfect for jumping between related files like a component and its test file, or between a controller and its view.
+</Tip>
+
+## Choosing between nvim-tree and Harpoon
+
+<Accordion title="Use nvim-tree when...">
+  - Exploring unfamiliar codebases
+  - Browsing directory structures
+  - Performing file operations (create, rename, delete)
+  - Viewing Git status at a glance
+  - Finding files you haven't opened yet
+</Accordion>
+
+<Accordion title="Use Harpoon when...">
+  - Working on a specific feature across multiple files
+  - Jumping between frequently edited files
+  - You know exactly which files you need
+  - Speed is critical
+  - You want to minimize context switching
+</Accordion>
+
+<Note>
+  Most developers use both: nvim-tree for discovery and file operations, Harpoon for rapid navigation during active development.
+</Note>

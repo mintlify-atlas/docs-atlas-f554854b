@@ -1,0 +1,294 @@
+---
+title: Installation
+description: Set up nvim-luffy on your system and start your coding adventure
+---
+
+## Prerequisites
+
+Before installing nvim-luffy, ensure you have the following requirements:
+
+<CardGroup cols={2}>
+  <Card title="Neovim 0.9+" icon="terminal">
+    Required for modern Lua features and plugin compatibility
+  </Card>
+  <Card title="Git" icon="code-branch">
+    For cloning the repository and plugin management
+  </Card>
+  <Card title="Node.js" icon="node-js">
+    Required for TypeScript LSP and some formatters
+  </Card>
+  <Card title="C compiler" icon="c">
+    Needed to build telescope-fzf-native and other native extensions
+  </Card>
+</CardGroup>
+
+<Tip>
+  On macOS, you can install Neovim with Homebrew: `brew install neovim`
+  
+  On Ubuntu/Debian: `sudo apt install neovim`
+  
+  For other platforms, visit [neovim.io](https://neovim.io/)
+</Tip>
+
+### Verify your Neovim version
+
+```bash
+nvim --version
+```
+
+You should see version 0.9.0 or higher.
+
+## Installation steps
+
+<Steps>
+  <Step title="Backup your existing configuration">
+    If you have an existing Neovim configuration, back it up first:
+
+    ```bash
+    # Backup your config
+    mv ~/.config/nvim ~/.config/nvim.backup
+
+    # Backup your data (plugins, state)
+    mv ~/.local/share/nvim ~/.local/share/nvim.backup
+
+    # Backup your cache
+    mv ~/.cache/nvim ~/.cache/nvim.backup
+    ```
+
+    <Warning>
+      This step is crucial to prevent conflicts with your existing configuration. You can restore your old setup by reversing these commands.
+    </Warning>
+  </Step>
+
+  <Step title="Clone the repository">
+    Clone nvim-luffy to your Neovim configuration directory:
+
+    ```bash
+    git clone https://github.com/yangleyland/nvim-luffy.git ~/.config/nvim
+    ```
+
+    This will download the configuration into the standard Neovim config location.
+  </Step>
+
+  <Step title="Launch Neovim">
+    Open Neovim to trigger the automatic installation process:
+
+    ```bash
+    nvim
+    ```
+
+    On first launch, lazy.nvim will automatically:
+    1. Bootstrap itself from GitHub
+    2. Install all configured plugins
+    3. Download language servers via Mason
+    4. Set up formatters and linters
+
+    <Note>
+      The initial installation may take 2-5 minutes depending on your internet connection. You'll see a progress window showing plugin downloads.
+    </Note>
+  </Step>
+
+  <Step title="Wait for plugin installation">
+    lazy.nvim will display a window showing the installation progress. Wait until all plugins are installed.
+
+    Once complete, you'll see the Alpha dashboard with the Luffy ASCII art:
+
+    ```
+    "Maybe the One Piece was the commits you made along the way."
+    
+      Find file
+      Recent files  
+      Quit
+    ```
+  </Step>
+
+  <Step title="Install language servers">
+    Mason will automatically install the configured language servers in the background. You can check the status by running:
+
+    ```vim
+    :Mason
+    ```
+
+    This opens the Mason UI showing all installed and available language servers. The following are automatically installed:
+
+    <AccordionGroup>
+      <Accordion title="Language servers">
+        - **ts_ls** - TypeScript/JavaScript
+        - **lua_ls** - Lua
+        - **pyright** - Python
+        - **html** - HTML
+        - **cssls** - CSS
+        - **tailwindcss** - Tailwind CSS
+        - **svelte** - Svelte
+        - **graphql** - GraphQL
+        - **emmet_ls** - Emmet
+        - **prismals** - Prisma
+        - **eslint** - ESLint
+      </Accordion>
+
+      <Accordion title="Formatters and linters">
+        - **prettier** - Multi-language formatter
+        - **stylua** - Lua formatter
+        - **black** - Python formatter
+        - **isort** - Python import sorter
+        - **pylint** - Python linter
+        - **eslint_d** - Fast ESLint daemon
+      </Accordion>
+    </AccordionGroup>
+  </Step>
+
+  <Step title="Verify installation">
+    Test that everything is working correctly:
+
+    1. Open a file: Press `<Space><Space>` and type a filename
+    2. Check LSP status: Open any supported file (e.g., `.lua`, `.ts`)
+    3. Verify completion: Type in insert mode - you should see suggestions
+    4. Test file explorer: Press `<Space>e` to toggle nvim-tree
+
+    <Tip>
+      If you encounter any issues, run `:checkhealth` to diagnose problems with your installation.
+    </Tip>
+  </Step>
+</Steps>
+
+## Post-installation
+
+### Understanding the file structure
+
+Here's how nvim-luffy is organized:
+
+```bash
+~/.config/nvim/
+├── init.lua                    # Entry point
+├── lua/
+│   └── leyland/
+│       ├── core/              # Core configuration
+│       │   ├── init.lua       # Loads core modules
+│       │   ├── options.lua    # Vim options
+│       │   ├── keymaps.lua    # Key mappings
+│       │   └── autocommands.lua  # Auto commands
+│       ├── plugins/           # Plugin configurations
+│       │   ├── init.lua       # Base plugins
+│       │   ├── alpha.lua      # Dashboard
+│       │   ├── telescope.lua  # Fuzzy finder
+│       │   ├── nvim-tree.lua  # File explorer
+│       │   ├── harpoon.lua    # Quick navigation
+│       │   ├── treesitter.lua # Syntax highlighting
+│       │   ├── nvim-cmp.lua   # Completion
+│       │   └── lsp/           # LSP configs
+│       │       ├── mason.lua  # LSP installer
+│       │       └── lsp.lua    # LSP setup
+│       ├── lazy.lua           # Plugin manager setup
+│       └── lsp.lua            # LSP initialization
+└── lazy-lock.json             # Plugin version lock
+```
+
+### Plugin data locations
+
+<Info>
+  - Plugins are stored in: `~/.local/share/nvim/lazy/`
+  - Mason packages: `~/.local/share/nvim/mason/`
+  - State and logs: `~/.local/state/nvim/`
+  - Cache: `~/.cache/nvim/`
+</Info>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Plugins won't install">
+    1. Check your internet connection
+    2. Verify Git is installed: `git --version`
+    3. Try removing the lazy.nvim directory and restart:
+       ```bash
+       rm -rf ~/.local/share/nvim/lazy
+       nvim
+       ```
+  </Accordion>
+
+  <Accordion title="LSP not working">
+    1. Open Mason: `:Mason`
+    2. Check if the language server is installed (green checkmark)
+    3. If not, manually install it: press `i` while hovering over the package
+    4. Check LSP status: `:LspInfo`
+    5. Run health check: `:checkhealth lspconfig`
+  </Accordion>
+
+  <Accordion title="Telescope not finding files">
+    1. Ensure you're in a directory with files
+    2. Check if ripgrep is installed (for live_grep): `rg --version`
+    3. Install if missing: `brew install ripgrep` (macOS) or `apt install ripgrep` (Linux)
+  </Accordion>
+
+  <Accordion title="Telescope fzf-native build failed">
+    This plugin requires a C compiler:
+    
+    **macOS:** Install Xcode Command Line Tools
+    ```bash
+    xcode-select --install
+    ```
+    
+    **Ubuntu/Debian:**
+    ```bash
+    sudo apt install build-essential
+    ```
+    
+    Then rebuild the plugin:
+    ```vim
+    :Lazy build telescope-fzf-native.nvim
+    ```
+  </Accordion>
+
+  <Accordion title="Colors look wrong">
+    Your terminal might not support true colors. Add this to your shell config:
+    
+    **Bash/Zsh:** `~/.bashrc` or `~/.zshrc`
+    ```bash
+    export TERM=xterm-256color
+    ```
+    
+    Or use a modern terminal emulator like iTerm2, Alacritty, or WezTerm.
+  </Accordion>
+</AccordionGroup>
+
+## Updating nvim-luffy
+
+To update to the latest version:
+
+<CodeGroup>
+
+```bash Git pull
+# Navigate to config directory
+cd ~/.config/nvim
+
+# Pull latest changes
+git pull
+
+# Restart Neovim - plugins will auto-update
+nvim
+```
+
+```vim Update plugins manually
+" Update all plugins
+:Lazy sync
+
+" Update Mason packages
+:MasonUpdate
+```
+
+</CodeGroup>
+
+<Tip>
+  The lazy.nvim plugin manager has auto-update checking enabled. You'll be notified of plugin updates, but they won't be installed automatically.
+</Tip>
+
+## Next steps
+
+Now that nvim-luffy is installed, learn how to use it:
+
+<Card
+  title="Quickstart guide"
+  icon="rocket"
+  href="/quickstart"
+>
+  Master the essential keybindings and workflows in 5 minutes
+</Card>

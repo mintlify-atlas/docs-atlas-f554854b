@@ -1,0 +1,277 @@
+---
+title: Keybindings
+description: Customize and add your own keybindings to nvim-luffy for a personalized workflow
+---
+
+## Understanding the keymap structure
+
+nvim-luffy uses Neovim's built-in `vim.keymap` API to define keybindings. The leader key is set to **Space** (`<Space>`).
+
+### Current keybindings
+
+Here are some of the core keybindings defined in nvim-luffy:
+
+| Key | Mode | Action | Description |
+|-----|------|--------|-------------|
+| `<leader>\|` | Normal | Split vertically | Create vertical window split |
+| `<leader>sh` | Normal | Split horizontally | Create horizontal window split |
+| `<leader>bd` | Normal | Close buffer | Close current buffer |
+| `<leader>ba` | Normal | Close all buffers | Close all open buffers |
+| `<leader><leader>` | Normal | Find files | Open Telescope file finder |
+| `<leader>/` | Normal | Live grep | Search text in project |
+| `<leader>e` | Normal | Toggle file tree | Open/close nvim-tree |
+
+<Tip>
+Press `<leader>fk` (Space + f + k) to open a Telescope window showing all available keymaps in your configuration.
+</Tip>
+
+## Adding custom keybindings
+
+There are two main places to add keybindings in nvim-luffy:
+
+1. **Global keybindings** - `lua/leyland/core/keymaps.lua`
+2. **Plugin-specific keybindings** - Within each plugin's configuration file
+
+### Adding global keybindings
+
+For general keybindings that aren't tied to a specific plugin, add them to the core keymaps file.
+
+<Steps>
+  <Step title="Open the keymaps file">
+    Navigate to `lua/leyland/core/keymaps.lua` in your nvim-luffy configuration.
+  </Step>
+  
+  <Step title="Add your keybinding">
+    Use the `keymap.set()` function with this syntax:
+    
+    ```lua
+    keymap.set(mode, key_sequence, action, options)
+    ```
+    
+    For example, to add a keybinding that saves all files:
+    
+    ```lua lua/leyland/core/keymaps.lua
+    local keymap = vim.keymap
+    
+    -- Save all files
+    keymap.set("n", "<leader>wa", "<cmd>wa<CR>", { desc = "Save all files" })
+    ```
+  </Step>
+  
+  <Step title="Reload configuration">
+    Save the file and restart Neovim, or source the file with `:source %` while editing it.
+  </Step>
+</Steps>
+
+### Keymap parameters explained
+
+```lua
+keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Close buffer" })
+           │         │              │                    │
+           │         │              │                    └─ Description (shows in which-key/Telescope)
+           │         │              └─ Command to execute
+           │         └─ Key sequence
+           └─ Mode (n=normal, i=insert, v=visual, x=visual block, t=terminal)
+```
+
+## Common keybinding patterns
+
+Here are some useful keybinding patterns you can add to your configuration:
+
+<CodeGroup>
+```lua Navigation
+-- Move between buffers
+keymap.set("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Next buffer" })
+keymap.set("n", "<S-Tab>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+
+-- Center screen when jumping
+keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Scroll down and center" })
+keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
+```
+
+```lua Editing
+-- Move lines up and down
+keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move line down" })
+keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
+
+-- Better paste in visual mode
+keymap.set("x", "<leader>p", '"_dP', { desc = "Paste without yanking" })
+
+-- Select all
+keymap.set("n", "<C-a>", "ggVG", { desc = "Select all" })
+```
+
+```lua Quick actions
+-- Clear search highlight
+keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
+
+-- Quick exit insert mode
+keymap.set("i", "jk", "<ESC>", { desc = "Exit insert mode" })
+
+-- Format current buffer
+keymap.set("n", "<leader>fm", vim.lsp.buf.format, { desc = "Format buffer" })
+```
+</CodeGroup>
+
+## Plugin-specific keybindings
+
+Many plugins define their own keybindings within their configuration files. This keeps related functionality organized together.
+
+### Example: Telescope keybindings
+
+In `lua/leyland/plugins/telescope.lua`, keybindings are defined in the plugin's `config` function:
+
+```lua lua/leyland/plugins/telescope.lua
+config = function()
+  local telescope = require("telescope")
+  
+  -- Setup telescope...
+  telescope.setup({ ... })
+  
+  -- Define keybindings
+  local keymap = vim.keymap
+  keymap.set("n", "<leader><leader>", "<cmd>Telescope find_files<cr>", 
+    { desc = "Fuzzy find files in cwd" })
+  keymap.set("n", "<leader>/", "<cmd>Telescope live_grep<cr>", 
+    { desc = "Find string in cwd" })
+end,
+```
+
+### Example: nvim-tree keybindings
+
+You can also use the `keys` property for lazy-loaded plugins:
+
+```lua lua/leyland/plugins/nvim-tree.lua
+return {
+  "nvim-tree/nvim-tree.lua",
+  keys = {
+    { "<leader>e", "<cmd>NvimTreeFindFileToggle<cr>", desc = "Toggle file explorer" },
+  },
+  config = function()
+    -- Plugin configuration...
+  end,
+}
+```
+
+<Tip>
+Using the `keys` property with lazy.nvim will automatically lazy-load the plugin only when the keybinding is pressed, improving startup time.
+</Tip>
+
+## Best practices for keybindings
+
+### Avoid conflicts
+
+Before adding a keybinding, check if it's already in use:
+
+<Steps>
+  <Step title="Check existing keymaps">
+    Use Telescope to view all keymaps: `<leader>fk`
+  </Step>
+  
+  <Step title="Test the key">
+    In normal mode, press the key sequence you want to use and see if anything happens.
+  </Step>
+  
+  <Step title="Check default Vim bindings">
+    Some keys like `d`, `y`, `c` are core Vim operators. Avoid remapping these unless you know what you're doing.
+  </Step>
+</Steps>
+
+### Use descriptive descriptions
+
+Always add a `desc` field to your keybindings. This helps with:
+- Documentation
+- Discovery through Telescope's keymap finder
+- Integration with which-key plugins
+
+```lua
+-- Bad: No description
+keymap.set("n", "<leader>bd", "<cmd>bd<CR>")
+
+-- Good: Clear description
+keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Close buffer" })
+```
+
+### Organize by functionality
+
+Group related keybindings together with comments:
+
+```lua lua/leyland/core/keymaps.lua
+local keymap = vim.keymap
+
+-- Window management
+keymap.set("n", "<leader>|", "<C-w>v", { desc = "Split window vertically" })
+keymap.set("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally" })
+keymap.set("n", "<leader>sx", "<C-w>q", { desc = "Close current split" })
+
+-- Buffer management
+keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Close buffer" })
+keymap.set("n", "<leader>ba", "<cmd>%bd<CR>", { desc = "Close all buffers" })
+```
+
+### Use leader key for custom bindings
+
+The leader key (Space in nvim-luffy) is perfect for custom actions:
+
+- `<leader>` combinations are unlikely to conflict with default Vim bindings
+- Easy to remember and discover
+- Creates a consistent namespace for your custom actions
+
+<Warning>
+Avoid remapping core Vim motions like `h`, `j`, `k`, `l`, `w`, `b`, etc. These are fundamental to Vim's modal editing philosophy.
+</Warning>
+
+## Advanced: Mode-specific keybindings
+
+You can create keybindings that work in specific modes:
+
+```lua lua/leyland/core/keymaps.lua
+-- Normal mode only
+keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Save file" })
+
+-- Insert mode only
+keymap.set("i", "<C-s>", "<Esc><cmd>w<CR>a", { desc = "Save in insert mode" })
+
+-- Visual mode only
+keymap.set("v", "<leader>y", '"+y', { desc = "Copy to system clipboard" })
+
+-- Multiple modes at once
+keymap.set({"n", "v"}, "<leader>d", '"_d', { desc = "Delete without yanking" })
+
+-- Terminal mode
+keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+```
+
+## Troubleshooting
+
+### Keybinding not working
+
+If your keybinding isn't working:
+
+1. Check for typos in the key sequence
+2. Verify the mode is correct (`n` for normal, `i` for insert, etc.)
+3. Look for conflicting keybindings using `<leader>fk`
+4. Make sure you've reloaded the configuration
+
+### Plugin keybinding takes precedence
+
+If a plugin's keybinding conflicts with yours:
+
+- Your global keybindings in `keymaps.lua` are loaded first
+- Plugin keybindings are loaded when the plugin loads
+- Later keybindings override earlier ones
+
+To fix this, either:
+- Disable the plugin's keybinding in its config
+- Choose a different key for your custom binding
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Adding plugins" icon="plug" href="/customization/adding-plugins">
+    Extend nvim-luffy with new plugins
+  </Card>
+  <Card title="Plugin configuration" icon="gear" href="/customization/plugin-configuration">
+    Modify existing plugin settings
+  </Card>
+</CardGroup>

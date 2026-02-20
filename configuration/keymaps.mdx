@@ -1,0 +1,146 @@
+---
+title: Keymaps
+description: Essential keyboard shortcuts and custom keybindings configured in nvim-luffy
+---
+
+# Keymaps
+
+This page documents all custom keymaps configured in nvim-luffy. These shortcuts help you navigate and manage your editing environment efficiently.
+
+## Leader key
+
+<Note>
+  The leader key is set to **Space**. All keymaps shown with `<leader>` require pressing Space first.
+</Note>
+
+```lua
+vim.g.mapleader = " "
+```
+
+For example, `<leader>|` means: press **Space**, then press **|**.
+
+## Window management
+
+These keymaps help you split and organize your workspace.
+
+<CardGroup cols={2}>
+  <Card title="Vertical split" icon="grip-lines-vertical">
+    **Keymap:** `<leader>|` (Space + Pipe)
+    
+    Splits the current window vertically, creating a new window to the right.
+    
+    ```lua
+    keymap.set("n", "<leader>|", "<C-w>v", 
+      { desc = "Split window vertically" })
+    ```
+  </Card>
+
+  <Card title="Horizontal split" icon="grip-lines">
+    **Keymap:** `<leader>sh` (Space + s + h)
+    
+    Splits the current window horizontally, creating a new window below.
+    
+    ```lua
+    keymap.set("n", "<leader>sh", "<C-w>s", 
+      { desc = "Split window horizontally" })
+    ```
+  </Card>
+</CardGroup>
+
+<Tip>
+  These keymaps use native Vim window commands (`<C-w>v` and `<C-w>s`) but provide more memorable shortcuts.
+</Tip>
+
+## Buffer management
+
+Manage your open files (buffers) with these commands.
+
+### Close single buffer
+
+**Keymap:** `<leader>bd` (Space + b + d)
+
+```lua
+keymap.set("n", "<leader>bd", "<cmd>bd<CR>", 
+  { desc = "Close buffer" })
+```
+
+Closes the current buffer. Think of it as "buffer delete".
+
+### Close all buffers
+
+**Keymap:** `<leader>ba` (Space + b + a)
+
+```lua
+keymap.set("n", "<leader>ba", "<cmd>%bd<CR>", 
+  { desc = "Close all buffers" })
+```
+
+<Warning>
+  This closes **all** open buffers. Make sure you've saved your work before using this command.
+</Warning>
+
+Think of it as "buffer all" (close all).
+
+## Keymap reference table
+
+| Mode | Keymap | Action | Description |
+|------|--------|--------|-------------|
+| Normal | `<leader>\|` | `<C-w>v` | Split window vertically |
+| Normal | `<leader>sh` | `<C-w>s` | Split window horizontally |
+| Normal | `<leader>bd` | `:bd` | Close current buffer |
+| Normal | `<leader>ba` | `:%bd` | Close all buffers |
+
+## Commented out keymaps
+
+The source file includes some keymaps that are commented out. You can enable these by uncommenting them in `~/workspace/source/lua/leyland/core/keymaps.lua`.
+
+<AccordionGroup>
+  <Accordion title="Quick escape from Insert mode">
+    ```lua
+    -- keymap.set("i", "jk", "<ESC>", 
+    --   {desc = "Exit Insert mode with jk"})
+    ```
+    
+    This would allow you to press `jk` in quick succession to exit Insert mode instead of reaching for the Escape key.
+  </Accordion>
+
+  <Accordion title="Clear search highlights">
+    ```lua
+    -- keymap.set("n", "<leader>nh", ":nohl<CR>", 
+    --   { desc = "Clear search highlights" })
+    ```
+    
+    This would let you press `<leader>nh` to clear search highlighting. However, nvim-luffy has an autocommand that clears highlights automatically when you move the cursor (see [Autocommands](/configuration/autocommands)).
+  </Accordion>
+</AccordionGroup>
+
+## Adding your own keymaps
+
+You can add custom keymaps using the same pattern:
+
+```lua
+local keymap = vim.keymap
+
+keymap.set("mode", "keys", "command", { desc = "Description" })
+```
+
+<Tabs>
+  <Tab title="Parameters">
+    - **mode**: `"n"` (Normal), `"i"` (Insert), `"v"` (Visual), etc.
+    - **keys**: The key combination to trigger the action
+    - **command**: The Vim command or key sequence to execute
+    - **desc**: Description shown in which-key or telescope
+  </Tab>
+  <Tab title="Example">
+    ```lua
+    keymap.set("n", "<leader>w", "<cmd>w<CR>", 
+      { desc = "Save file" })
+    ```
+    
+    This creates a keymap that saves the current file when you press Space + w in Normal mode.
+  </Tab>
+</Tabs>
+
+<Note>
+  All keymaps are set in Normal mode (`"n"`) unless otherwise specified. The descriptions are used by plugins like which-key to show helpful hints.
+</Note>

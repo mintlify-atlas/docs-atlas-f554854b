@@ -1,0 +1,183 @@
+---
+title: Options
+description: Core Neovim options configured in nvim-luffy for an optimized editing experience
+---
+
+# Options
+
+This page documents all Vim options configured in nvim-luffy. These settings control the editor's behavior, appearance, and functionality.
+
+## Display settings
+
+These options control how your editor appears and how content is displayed.
+
+<AccordionGroup>
+  <Accordion title="Line numbers">
+    ```lua
+    opt.number = true
+    opt.relativenumber = true
+    ```
+    
+    You get both absolute and relative line numbers enabled. The current line shows the absolute line number, while other lines show their distance from your cursor. This makes it easy to use motion commands like `10j` or `5k`.
+  </Accordion>
+
+  <Accordion title="Command and status line">
+    ```lua
+    opt.cmdheight = 0
+    opt.laststatus = 0
+    opt.winbar = "%f %h%m%r%=%l,%c %P"
+    ```
+    
+    The command line height is set to 0 for a minimal look, and the statusline is hidden. Instead, you get a winbar that shows:
+    - `%f` - File name
+    - `%h%m%r` - Help, modified, and readonly flags
+    - `%=` - Right-align the following
+    - `%l,%c` - Current line and column
+    - `%P` - Percentage through file
+  </Accordion>
+
+  <Accordion title="Line wrapping">
+    ```lua
+    opt.wrap = false
+    ```
+    
+    Line wrapping is disabled. Long lines extend beyond the screen width rather than wrapping to the next line.
+  </Accordion>
+
+  <Accordion title="Sign column">
+    ```lua
+    opt.signcolumn = "yes"
+    ```
+    
+    The sign column is always visible on the left side. This prevents text from shifting when diagnostic signs or git indicators appear.
+  </Accordion>
+
+  <Accordion title="Background">
+    ```lua
+    opt.background = "dark"
+    ```
+    
+    The background is set to dark, which colorschemes use to determine their variant.
+  </Accordion>
+</AccordionGroup>
+
+## Indentation and tabs
+
+<Tip>
+  nvim-luffy uses 2 spaces for indentation by default, which is common in Lua and web development.
+</Tip>
+
+```lua
+opt.tabstop = 2
+opt.shiftwidth = 2
+opt.expandtab = true
+opt.autoindent = true
+```
+
+| Option | Value | Description |
+|--------|-------|-------------|
+| `tabstop` | `2` | Number of spaces a tab character represents |
+| `shiftwidth` | `2` | Number of spaces used for each indentation level |
+| `expandtab` | `true` | Convert tabs to spaces when you press Tab |
+| `autoindent` | `true` | Copy indentation from current line when starting a new line |
+
+<Note>
+  For more details on autoindent behavior, see `:h autoindent` in Neovim.
+</Note>
+
+## Search settings
+
+These options make searching smarter and more intuitive.
+
+```lua
+opt.ignorecase = true
+opt.smartcase = true
+```
+
+<Tabs>
+  <Tab title="ignorecase">
+    When `ignorecase` is enabled, searches are case-insensitive by default. Searching for `hello` will match `Hello`, `HELLO`, and `hello`.
+  </Tab>
+  <Tab title="smartcase">
+    When `smartcase` is enabled alongside `ignorecase`, searches become case-sensitive only when you include uppercase letters. 
+    
+    Examples:
+    - `hello` matches `Hello`, `HELLO`, `hello`
+    - `Hello` only matches `Hello`
+  </Tab>
+</Tabs>
+
+## System integration
+
+### Clipboard
+
+```lua
+opt.clipboard:append("unnamedplus")
+```
+
+The system clipboard is used as the default register. When you yank or delete text in Neovim, it's automatically available in your system clipboard, and vice versa.
+
+### Backspace behavior
+
+```lua
+opt.backspace = "indent,eol,start"
+```
+
+Backspace can delete:
+- `indent` - Automatically inserted indentation
+- `eol` - Line breaks (join lines)
+- `start` - Characters inserted before starting Insert mode
+
+## Window splitting
+
+```lua
+opt.splitright = true
+opt.splitbelow = true
+```
+
+New windows open in intuitive positions:
+- Vertical splits (`:vsplit`) open to the right
+- Horizontal splits (`:split`) open below
+
+## File management
+
+### Swap files
+
+```lua
+opt.swapfile = false
+```
+
+<Warning>
+  Swap files are disabled. This means you won't get warnings about existing swap files, but you also lose crash recovery protection. Make sure you save your work frequently or use version control.
+</Warning>
+
+### Netrw file explorer
+
+```lua
+vim.cmd("let g:netrw_liststyle = 3")
+```
+
+The built-in file explorer (netrw) uses tree-style listing (style 3) for a hierarchical view of directories.
+
+## LSP settings
+
+```lua
+vim.lsp.set_log_level("error")
+```
+
+The LSP log level is set to only show errors, filtering out warnings and info messages. This keeps your notification area clean while still alerting you to critical issues.
+
+## Commented out options
+
+Some options are included in the source but commented out:
+
+```lua
+-- opt.cursorline = true
+-- opt.termguicolors = true
+```
+
+These are available if you want to:
+- Enable cursor line highlighting (`cursorline`)
+- Enable true color support (`termguicolors`)
+
+You can uncomment these in `~/workspace/source/lua/leyland/core/options.lua` if desired.

@@ -1,0 +1,303 @@
+---
+title: Completion
+description: Intelligent code completion with nvim-cmp, snippets, and LSP integration
+---
+
+nvim-luffy provides a comprehensive completion system powered by nvim-cmp with LSP integration, snippets, and multiple sources.
+
+## Overview
+
+The completion system uses:
+
+- **nvim-cmp** - Completion engine
+- **LuaSnip** - Snippet engine
+- **LSP sources** - Intelligent completions from language servers
+- **lspkind** - VS Code-like pictograms
+
+## Features
+
+- LSP-based intelligent completions
+- Snippet expansion and navigation
+- Path and buffer completions
+- VS Code-like completion menu with icons
+- Automatic bracket pairing
+
+## Configuration
+
+```lua lua/leyland/plugins/nvim-cmp.lua
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      luasnip.lsp_expand(args.body)
+    end,
+  },
+  sources = cmp.config.sources({
+    { name = "nvim_lsp" },  -- LSP completions
+    { name = "luasnip" },   -- Snippet completions
+    { name = "buffer" },    -- Text from current buffer
+    { name = "path" },      -- File system paths
+  }),
+  formatting = {
+    format = lspkind.cmp_format({
+      maxwidth = 50,
+      ellipsis_char = "...",
+    }),
+  },
+})
+```
+
+## Keybindings
+
+### In insert mode
+
+<Tabs>
+  <Tab title="Navigation">
+    | Key | Action | Description |
+    |-----|--------|-------------|
+    | `<C-j>` | Next item | Select next completion |
+    | `<C-k>` | Previous item | Select previous completion |
+    | `<C-Space>` | Trigger completion | Show completion menu |
+    | `<C-e>` | Close | Abort completion |
+  </Tab>
+  <Tab title="Selection">
+    | Key | Action | Description |
+    |-----|--------|-------------|
+    | `<CR>` | Confirm | Accept selected completion |
+    | `<Tab>` | Next/Expand | Select next or expand snippet |
+  </Tab>
+  <Tab title="Documentation">
+    | Key | Action | Description |
+    |-----|--------|-------------|
+    | `<C-f>` | Scroll down | Scroll documentation down |
+    | `<C-b>` | Scroll up | Scroll documentation up |
+  </Tab>
+</Tabs>
+
+<Note>
+  Pressing `<Tab>` when a snippet is active will jump to the next placeholder. Otherwise it selects the next completion item.
+</Note>
+
+## Completion sources
+
+Completions come from multiple sources in priority order:
+
+### LSP (nvim_lsp)
+
+Intelligent completions from language servers:
+
+- Function signatures
+- Variable names
+- Type information
+- Import suggestions
+- Documentation
+
+<Accordion title="Example">
+  When you type `console.` in JavaScript, LSP suggests:
+  - `log()`
+  - `error()`
+  - `warn()`
+  - `info()`
+  
+  With full documentation and signatures.
+</Accordion>
+
+### Snippets (luasnip)
+
+Code snippets from friendly-snippets:
+
+- Common patterns for each language
+- Framework-specific snippets
+- Custom snippets (if added)
+
+<Accordion title="Example snippets">
+  **JavaScript:**
+  - `fn` → arrow function
+  - `log` → console.log()
+  - `foreach` → forEach loop
+  
+  **TypeScript:**
+  - `interface` → interface definition
+  - `type` → type alias
+  - `enum` → enum declaration
+  
+  **React:**
+  - `rfc` → React functional component
+  - `usestate` → useState hook
+  - `useeffect` → useEffect hook
+</Accordion>
+
+### Buffer (buffer)
+
+Words from the current file:
+
+- Variable names you've already typed
+- Function names in current buffer
+- Any text in the current file
+
+### Path (path)
+
+File system paths:
+
+- Completes file and directory names
+- Works in strings and require statements
+- Relative and absolute paths
+
+<Accordion title="Example">
+  When you type `require('./com`, you get:
+  - `./components/`
+  - `./common/`
+  - `./config/`
+</Accordion>
+
+## Snippet usage
+
+### Expanding snippets
+
+<Steps>
+  <Step title="Type snippet trigger">
+    Start typing a snippet trigger like `log`
+  </Step>
+  <Step title="Select from completion">
+    Navigate to the snippet in the completion menu
+  </Step>
+  <Step title="Expand">
+    Press `<Tab>` or `<CR>` to expand the snippet
+  </Step>
+  <Step title="Fill placeholders">
+    Type values for placeholders, press `<Tab>` to jump to next placeholder
+  </Step>
+</Steps>
+
+### Example workflow
+
+```javascript
+// Type: rfc<Tab>
+// Expands to:
+function ComponentName() {
+  return (
+    <div>
+      |cursor|
+    </div>
+  )
+}
+
+export default ComponentName
+
+// Press <Tab> to jump between placeholders
+```
+
+## Auto-pairs
+
+nvim-autopairs automatically closes brackets and quotes:
+
+```lua lua/leyland/plugins/autopairs.lua
+autopairs.setup({
+  check_ts = true,  -- Use Treesitter
+  ts_config = {
+    lua = { "string" },  -- No pairs in Lua strings
+    javascript = { "template_string" },  -- No pairs in template strings
+  },
+})
+```
+
+### Behavior
+
+- Typing `(` automatically adds `)`
+- Typing `"` automatically adds closing `"`
+- Pressing `<CR>` between brackets creates indented block
+- Smart context awareness (no pairs in strings/comments)
+
+<Accordion title="Examples">
+  ```javascript
+  // Type: function test(
+  // Result: function test(|)
+  
+  // Type: {
+  // Result: {|}
+  
+  // Type: { and then <CR>
+  // Result:
+  {
+    |cursor|
+  }
+  
+  // In template string:
+  // Type: `hello ${
+  // Result: `hello ${|}` (auto-pairs works here too)
+  ```
+</Accordion>
+
+## Completion menu
+
+The completion menu shows:
+
+- **Icon** - Type of completion (function, variable, snippet, etc.)
+- **Label** - Completion text
+- **Kind** - Source (LSP, snippet, buffer, path)
+- **Documentation** - Preview window with details
+
+### Icons (lspkind)
+
+VS Code-style icons indicate completion type:
+
+- 󰊕 Function
+- 󰀫 Variable  
+- 󰌗 Keyword
+- 󰅩 Snippet
+- 󰉿 File
+- 󰉋 Folder
+- 󰜢 Type
+- 󰘧 Method
+
+## Advanced features
+
+### Context-aware completion
+
+The completion engine understands context:
+
+- Different completions for different positions
+- Type-aware suggestions
+- Import auto-insertion
+
+### Documentation preview
+
+Hover over a completion to see:
+
+- Function signatures
+- Parameter types
+- Return types
+- Usage examples
+- Source documentation
+
+### Intelligent ranking
+
+Completions are ranked by:
+
+1. LSP relevance score
+2. Recently used items
+3. Prefix matching
+4. Fuzzy matching distance
+
+<Tip>
+  Press `<C-Space>` to manually trigger completions if the menu doesn't appear automatically.
+</Tip>
+
+## Troubleshooting
+
+<Accordion title="Completions not appearing">
+  1. Check LSP is attached: `:LspInfo`
+  2. Manually trigger: `<C-Space>`
+  3. Restart LSP: `<leader>rs`
+</Accordion>
+
+<Accordion title="Snippets not working">
+  1. Verify LuaSnip is loaded: `:Lazy`
+  2. Check friendly-snippets installed
+  3. Try manual expansion: Select snippet and press `<Tab>`
+</Accordion>
+
+<Accordion title="Documentation not showing">
+  1. Some completions don't have docs
+  2. Try `K` in normal mode for hover docs
+  3. Scroll with `<C-f>`/`<C-b>` to see more
+</Accordion>

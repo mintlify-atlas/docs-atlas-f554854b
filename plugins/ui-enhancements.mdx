@@ -1,0 +1,374 @@
+---
+title: UI enhancements
+description: Beautiful dashboard, colorschemes, and visual improvements
+---
+
+nvim-luffy includes carefully selected UI enhancements that make your editing experience both beautiful and functional.
+
+## Alpha dashboard
+
+Alpha provides a customizable startup screen with a One Piece inspired design.
+
+### Features
+
+- ASCII art header (Luffy's Gear 5 form)
+- Quick access buttons
+- Inspirational One Piece quote
+- Fast startup (lazy loaded)
+
+### Configuration
+
+```lua lua/leyland/plugins/alpha.lua
+dashboard.section.header.val = {
+  -- ASCII art of Luffy
+}
+
+dashboard.section.buttons.val = {
+  dashboard.button("f", "  Find file", ":Telescope find_files <CR>"),
+  dashboard.button("r", "  Recent files", ":Telescope oldfiles <CR>"),
+  dashboard.button("q", "  Quit", ":qa<CR>"),
+}
+
+dashboard.section.footer.val = {
+  "",
+  '"Maybe the One Piece was the commits you made along the way."',
+  "",
+}
+```
+
+### Dashboard buttons
+
+Press the corresponding key to trigger an action:
+
+| Key | Action | Description |
+|-----|--------|-------------|
+| `f` | Find file | Open Telescope file finder |
+| `r` | Recent files | Browse recently opened files |
+| `q` | Quit | Exit Neovim |
+
+<Tip>
+  The dashboard automatically appears when you open Neovim without a file argument.
+</Tip>
+
+## Colorschemes
+
+nvim-luffy includes multiple colorschemes to suit different preferences:
+
+### Installed themes
+
+<Tabs>
+  <Tab title="Bamboo (Default)">
+    A natural, earthy colorscheme with warm tones.
+    
+    ```lua
+    vim.cmd.colorscheme("bamboo")
+    ```
+    
+    **Features:**
+    - Warm, natural colors
+    - High contrast
+    - Easy on the eyes
+  </Tab>
+  <Tab title="Catppuccin">
+    Pastel theme with four flavors: Latte, Frappé, Macchiato, and Mocha.
+    
+    ```lua
+    vim.cmd.colorscheme("catppuccin")
+    vim.cmd.colorscheme("catppuccin-mocha")
+    ```
+    
+    **Features:**
+    - Smooth, pastel colors
+    - Multiple variants
+    - Excellent plugin integration
+  </Tab>
+  <Tab title="Tokyo Night">
+    Dark theme inspired by Tokyo's night lights.
+    
+    ```lua
+    vim.cmd.colorscheme("tokyonight")
+    vim.cmd.colorscheme("tokyonight-night")
+    vim.cmd.colorscheme("tokyonight-storm")
+    ```
+    
+    **Features:**
+    - Deep, rich colors
+    - Storm and Night variants
+    - Popular in the community
+  </Tab>
+  <Tab title="Rose Pine">
+    Minimal, elegant theme with low contrast.
+    
+    ```lua
+    vim.cmd.colorscheme("rose-pine")
+    vim.cmd.colorscheme("rose-pine-moon")
+    vim.cmd.colorscheme("rose-pine-dawn")
+    ```
+    
+    **Features:**
+    - Soft, muted colors
+    - Three variants
+    - Minimal design
+  </Tab>
+  <Tab title="Modus">
+    Highly accessible themes meeting WCAG AAA standards.
+    
+    ```lua
+    vim.cmd.colorscheme("modus_operandi")  -- Light
+    vim.cmd.colorscheme("modus_vivendi")   -- Dark
+    ```
+    
+    **Features:**
+    - Maximum accessibility
+    - Light and dark variants
+    - Excellent contrast
+  </Tab>
+  <Tab title="OneDark">
+    Atom-inspired dark theme.
+    
+    ```lua
+    vim.cmd.colorscheme("onedark")
+    ```
+    
+    **Features:**
+    - Classic dark theme
+    - Familiar to Atom users
+    - Multiple style options
+  </Tab>
+</Tabs>
+
+### Changing colorscheme
+
+<Steps>
+  <Step title="Edit configuration">
+    Open `lua/leyland/plugins/colorscheme.lua`
+  </Step>
+  <Step title="Change default theme">
+    Modify the config function:
+    
+    ```lua
+    config = function()
+      vim.cmd.colorscheme("your-theme-here")
+    end,
+    ```
+  </Step>
+  <Step title="Reload configuration">
+    Restart Neovim or run `:Lazy reload`
+  </Step>
+</Steps>
+
+<Accordion title="Try themes without changing config">
+  You can preview themes without editing config:
+  
+  ```vim
+  :colorscheme catppuccin
+  :colorscheme tokyonight-storm
+  :colorscheme rose-pine
+  ```
+  
+  Use `<Tab>` completion to see all available themes.
+</Accordion>
+
+## Snacks
+
+Snacks provides smooth scrolling animations for better visual feedback.
+
+### Configuration
+
+```lua lua/leyland/plugins/snacks.lua
+return {
+  "folke/snacks.nvim",
+  priority = 1000,
+  lazy = false,
+  opts = {
+    scroll = {
+      enabled = true,
+      animate = {
+        duration = { step = 10, total = 100 },
+        easing = "linear",
+      },
+    },
+  },
+}
+```
+
+### Features
+
+- Smooth scrolling with `<C-d>`, `<C-u>`, `<C-f>`, `<C-b>`
+- Subtle animations
+- Minimal performance impact
+- Linear easing for predictable movement
+
+## Flash
+
+Flash enhances navigation with intelligent motion and selection.
+
+### Features
+
+- Jump to any visible location with 2-3 keystrokes
+- Treesitter-based selections
+- Remote operations
+- Enhanced search
+
+### Configuration
+
+```lua lua/leyland/plugins/flash.lua
+opts = {
+  modes = {
+    char = {
+      char_actions = function(motion)
+        return {
+          [";"] = "next",
+          [","] = "prev",
+        }
+      end,
+    },
+  },
+}
+```
+
+### Keybindings
+
+<Tabs>
+  <Tab title="Motion">
+    | Key | Mode | Action |
+    |-----|------|--------|
+    | `s` | n, x, o | Jump to location |
+    | `S` | n, x, o | Treesitter selection |
+    | `;` | After `f`/`t` | Next occurrence |
+    | `,` | After `f`/`t` | Previous occurrence |
+  </Tab>
+  <Tab title="Selection">
+    | Key | Mode | Action |
+    |-----|------|--------|
+    | `<C-space>` | n, x, o | Incremental Treesitter selection |
+    | `<BS>` | After `<C-space>` | Shrink selection |
+  </Tab>
+  <Tab title="Operator">
+    | Key | Mode | Action |
+    |-----|------|--------|
+    | `r` | o | Remote operation |
+    | `R` | o, x | Treesitter search |
+  </Tab>
+  <Tab title="Search">
+    | Key | Mode | Action |
+    |-----|------|--------|
+    | `<C-s>` | c | Toggle Flash search |
+  </Tab>
+</Tabs>
+
+### Usage examples
+
+<Tabs>
+  <Tab title="Jump">
+    1. Press `s` in normal mode
+    2. Type the character you want to jump to
+    3. Type the label that appears
+    4. Cursor jumps to that location
+  </Tab>
+  <Tab title="Treesitter selection">
+    1. Press `S` in normal mode
+    2. Your current Treesitter node is selected
+    3. Press `S` again to expand selection
+    4. Press `<BS>` to shrink selection
+  </Tab>
+  <Tab title="Incremental selection">
+    1. Press `<C-space>` to select current node
+    2. Press `<C-space>` again to expand
+    3. Keep pressing to select parent nodes
+    4. Press `<BS>` to go back
+  </Tab>
+</Tabs>
+
+<Tip>
+  Flash's jump feature is similar to vim-sneak or hop.nvim but uses Treesitter for smarter selections.
+</Tip>
+
+## Other UI plugins
+
+### nvim-web-devicons
+
+Provides file type icons throughout the UI:
+
+- File explorer (nvim-tree)
+- Fuzzy finder (Telescope)
+- Completion menu (nvim-cmp)
+- Status line
+
+### lspkind
+
+Adds VS Code-like pictograms to completion menu:
+
+- 󰊕 Function
+- 󰀫 Variable
+- 󰌗 Keyword
+- 󰅩 Snippet
+- And many more
+
+### Trouble
+
+Beautiful diagnostics list:
+
+```vim
+:Trouble diagnostics toggle
+```
+
+Or press `<leader>xx`
+
+**Features:**
+- Grouped diagnostics
+- Quick navigation
+- Preview pane
+- Filter by severity
+
+### Todo Comments
+
+Highlights and searches special comments:
+
+- **TODO:** Things to do
+- **FIXME:** Things to fix
+- **HACK:** Temporary solutions
+- **WARNING:** Important warnings
+- **NOTE:** Important notes
+- **PERF:** Performance improvements
+
+Search todos with `<leader>ft`
+
+## Customization tips
+
+<Accordion title="Adjust scrolling speed">
+  Edit `lua/leyland/plugins/snacks.lua`:
+  
+  ```lua
+  duration = { step = 5, total = 50 }  -- Faster
+  duration = { step = 20, total = 200 } -- Slower
+  ```
+</Accordion>
+
+<Accordion title="Change dashboard quote">
+  Edit `lua/leyland/plugins/alpha.lua`:
+  
+  ```lua
+  dashboard.section.footer.val = {
+    "",
+    "Your custom quote here",
+    "",
+  }
+  ```
+</Accordion>
+
+<Accordion title="Disable Flash animations">
+  Edit `lua/leyland/plugins/flash.lua`:
+  
+  ```lua
+  opts = {
+    modes = {
+      search = { enabled = false },
+    },
+  }
+  ```
+</Accordion>
+
+<Note>
+  All UI enhancements are configured to be fast and non-intrusive. Most are lazy-loaded to maintain optimal startup times.
+</Note>

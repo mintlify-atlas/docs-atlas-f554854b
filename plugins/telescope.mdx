@@ -1,0 +1,183 @@
+---
+title: Telescope
+description: Fuzzy finder for files, text, and more with Telescope
+---
+
+Telescope is a highly extendable fuzzy finder that makes navigating your codebase effortless.
+
+## Features
+
+- Fast fuzzy finding with FZF algorithm
+- Preview files before opening
+- Search across multiple sources (files, text, Git, LSP, etc.)
+- Integration with other plugins
+
+## Configuration
+
+Telescope is configured with sensible defaults and vim-style navigation:
+
+```lua lua/leyland/plugins/telescope.lua
+telescope.setup({
+  defaults = {
+    path_display = { "filename_first" },
+    mappings = {
+      i = {
+        ["<C-k>"] = actions.move_selection_previous,
+        ["<C-j>"] = actions.move_selection_next,
+        ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+      },
+    },
+  },
+  pickers = {
+    live_grep = {
+      path_display = { "truncate" },
+    },
+  },
+})
+```
+
+## Keybindings
+
+### File pickers
+
+| Key | Picker | Description |
+|-----|--------|-------------|
+| `<leader><leader>` | Find files | Fuzzy find files in current directory |
+| `<leader>fr` | Recent files | Browse recently opened files |
+
+### Text search
+
+| Key | Picker | Description |
+|-----|--------|-------------|
+| `<leader>/` | Live grep | Search for text across all files |
+| `<leader>fc` | Grep string | Find string under cursor |
+| `<leader>ft` | TODO comments | Search for TODO, FIXME, etc. |
+
+### Utility pickers
+
+| Key | Picker | Description |
+|-----|--------|-------------|
+| `<leader>fk` | Keymaps | Search through available keybindings |
+
+## Telescope navigation
+
+When inside a Telescope picker:
+
+<Tabs>
+  <Tab title="Insert mode">
+    | Key | Action |
+    |-----|--------|
+    | `<C-j>` | Move to next result |
+    | `<C-k>` | Move to previous result |
+    | `<C-q>` | Send results to quickfix list |
+    | `<CR>` | Select item |
+    | `<Esc>` | Close Telescope |
+  </Tab>
+  <Tab title="Preview">
+    | Key | Action |
+    |-----|--------|
+    | `<C-u>` | Scroll preview up |
+    | `<C-d>` | Scroll preview down |
+  </Tab>
+</Tabs>
+
+## Available pickers
+
+### File pickers
+
+<Accordion title="find_files">
+  Fuzzy find files in the current working directory. Respects `.gitignore` when inside a Git repository.
+  
+  ```vim
+  :Telescope find_files
+  ```
+</Accordion>
+
+<Accordion title="oldfiles">
+  Browse recently opened files across all projects.
+  
+  ```vim
+  :Telescope oldfiles
+  ```
+</Accordion>
+
+### Search pickers
+
+<Accordion title="live_grep">
+  Search for text across all files in the current directory. Updates results as you type.
+  
+  ```vim
+  :Telescope live_grep
+  ```
+</Accordion>
+
+<Accordion title="grep_string">
+  Search for the word under the cursor across all files.
+  
+  ```vim
+  :Telescope grep_string
+  ```
+</Accordion>
+
+### LSP pickers
+
+These pickers are automatically used by LSP keybindings:
+
+- `lsp_references` - Find all references to symbol
+- `lsp_implementations` - Find all implementations
+- `lsp_type_definitions` - Find type definitions
+- `diagnostics` - List diagnostics
+
+### Utility pickers
+
+<Accordion title="keymaps">
+  Search through all available keybindings. Useful for discovering functionality.
+  
+  ```vim
+  :Telescope keymaps
+  ```
+</Accordion>
+
+## Extensions
+
+### FZF native
+
+The fzf-native extension provides C-based fuzzy finding for better performance:
+
+```lua
+telescope.load_extension("fzf")
+```
+
+### TODO comments
+
+Integration with todo-comments plugin allows searching for TODO, FIXME, HACK, and other comment tags:
+
+```vim
+:TodoTelescope
+```
+
+## Usage examples
+
+<Tabs>
+  <Tab title="Find files">
+    1. Press `<leader><leader>`
+    2. Start typing part of a filename
+    3. Use `<C-j>`/`<C-k>` to navigate results
+    4. Press `<CR>` to open the file
+  </Tab>
+  <Tab title="Search text">
+    1. Press `<leader>/`
+    2. Type the text you want to find
+    3. Results update as you type
+    4. Navigate and select with `<CR>`
+  </Tab>
+  <Tab title="Find TODOs">
+    1. Press `<leader>ft`
+    2. Browse all TODO comments in your project
+    3. Jump directly to the file and line
+  </Tab>
+</Tabs>
+
+<Tip>
+  In Telescope pickers, you can use fuzzy matching patterns like `foo bar` to find files containing both "foo" and "bar" in any order.
+</Tip>

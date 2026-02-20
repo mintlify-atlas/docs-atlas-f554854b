@@ -1,0 +1,286 @@
+---
+title: Git integration
+description: Seamless Git workflow with Neogit and Diffview
+---
+
+nvim-luffy provides powerful Git integration through Neogit and Diffview, giving you a complete Git workflow without leaving Neovim.
+
+## Neogit
+
+Neogit is a Magit-inspired Git interface for Neovim, providing an intuitive, keyboard-driven Git workflow.
+
+### Features
+
+- Interactive staging/unstaging
+- Commit creation with editor integration
+- Branch management
+- Rebase and merge operations
+- Log viewing
+- Stash management
+
+### Configuration
+
+```lua lua/leyland/plugins/neogit.lua
+return {
+  "NeogitOrg/neogit",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "sindrets/diffview.nvim",
+    "nvim-telescope/telescope.nvim",
+  },
+  cmd = "Neogit",
+}
+```
+
+<Note>
+  Neogit is lazy-loaded and only loads when you open it, keeping startup times fast.
+</Note>
+
+### Keybindings
+
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>gg` | Open Neogit | Open Neogit in floating window |
+
+### Using Neogit
+
+<Tabs>
+  <Tab title="Status view">
+    The main Neogit interface shows:
+    
+    - Untracked files
+    - Unstaged changes
+    - Staged changes
+    - Recent commits
+    - Stashes
+    
+    **Navigation:**
+    - `j`/`k` - Move between items
+    - `<Tab>` - Expand/collapse sections
+    - `=` - Show diff for item
+  </Tab>
+  <Tab title="Staging">
+    **Stage/unstage changes:**
+    - `s` - Stage file or hunk
+    - `u` - Unstage file or hunk
+    - `S` - Stage all changes
+    - `U` - Unstage all changes
+    - `x` - Discard changes (careful!)
+  </Tab>
+  <Tab title="Commits">
+    **Create commits:**
+    - `c` - Open commit menu
+    - `cc` - Create commit
+    - `ca` - Amend last commit
+    - `ce` - Extend last commit
+    
+    Your `$EDITOR` will open for the commit message.
+  </Tab>
+  <Tab title="Branches">
+    **Branch operations:**
+    - `b` - Open branch menu
+    - `bb` - Checkout branch
+    - `bc` - Create new branch
+    - `bd` - Delete branch
+  </Tab>
+</Tabs>
+
+### Workflow example
+
+<Steps>
+  <Step title="Open Neogit">
+    Press `<leader>gg` to open the status view
+  </Step>
+  <Step title="Review changes">
+    Navigate to a file and press `=` to see the diff
+  </Step>
+  <Step title="Stage changes">
+    Press `s` to stage files or hunks selectively
+  </Step>
+  <Step title="Commit">
+    Press `cc` to open the commit editor
+  </Step>
+  <Step title="Write message">
+    Write your commit message and save the buffer
+  </Step>
+</Steps>
+
+### Available commands
+
+<Accordion title="Log commands">
+  - `l` - Open log menu
+  - `ll` - Show log for current branch
+  - `lo` - Show log for another branch
+  - `lh` - Show reflog
+</Accordion>
+
+<Accordion title="Push/pull commands">
+  - `P` - Open push menu
+  - `p` - Open pull menu
+  - `Pp` - Push to upstream
+  - `Pu` - Push to upstream and set
+  - `pp` - Pull from upstream
+</Accordion>
+
+<Accordion title="Stash commands">
+  - `Z` - Open stash menu
+  - `Zz` - Create stash
+  - `Zp` - Pop stash
+  - `Za` - Apply stash
+  - `Zd` - Drop stash
+</Accordion>
+
+<Accordion title="Rebase commands">
+  - `r` - Open rebase menu
+  - `ri` - Interactive rebase
+  - `rm` - Rebase on main/master
+  - `ra` - Abort rebase
+  - `rc` - Continue rebase
+</Accordion>
+
+## Diffview
+
+Diffview provides a powerful interface for viewing Git diffs and file history.
+
+### Features
+
+- Side-by-side diff view
+- File panel with change overview
+- Compare branches or commits
+- View merge conflicts
+- File history browser
+
+### Configuration
+
+```lua lua/leyland/plugins/diffview.lua
+return {
+  "sindrets/diffview.nvim",
+  cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
+}
+```
+
+### Keybindings
+
+| Key | Action | Description |
+|-----|--------|-------------|
+| `<leader>dd` | Open diff view | View uncommitted changes |
+| `<leader>df` | Close diff view | Close the diff view |
+| `<leader>ds` | Branch diff | Compare current branch with main |
+
+### Using Diffview
+
+<Tabs>
+  <Tab title="Viewing changes">
+    **Open uncommitted changes:**
+    ```vim
+    :DiffviewOpen
+    ```
+    Or press `<leader>dd`
+    
+    This shows all uncommitted changes in a split view.
+  </Tab>
+  <Tab title="Comparing branches">
+    **Compare with main branch:**
+    ```vim
+    :DiffviewOpen origin/main...HEAD
+    ```
+    Or press `<leader>ds`
+    
+    Shows all changes in your branch compared to main.
+  </Tab>
+  <Tab title="Navigation">
+    **In diff view:**
+    - `]c` - Next change hunk
+    - `[c` - Previous change hunk
+    - `<Tab>` - Toggle file panel
+    - `g?` - Show help
+    
+    **In file panel:**
+    - `j`/`k` - Navigate files
+    - `<CR>` - Open file diff
+    - `s` - Stage file
+    - `u` - Unstage file
+  </Tab>
+</Tabs>
+
+### Common Diffview commands
+
+<Accordion title="Compare commits">
+  ```vim
+  :DiffviewOpen HEAD~2
+  ```
+  Shows changes in last 2 commits
+</Accordion>
+
+<Accordion title="Compare branches">
+  ```vim
+  :DiffviewOpen main...feature-branch
+  ```
+  Shows all changes in feature-branch not in main
+</Accordion>
+
+<Accordion title="File history">
+  ```vim
+  :DiffviewFileHistory
+  ```
+  Shows commit history for current file
+  
+  ```vim
+  :DiffviewFileHistory %
+  ```
+  Same as above (% = current file)
+</Accordion>
+
+<Accordion title="Close diff view">
+  ```vim
+  :DiffviewClose
+  ```
+  Or press `<leader>df`
+</Accordion>
+
+## Git workflow
+
+Here's a complete Git workflow using Neogit and Diffview:
+
+<Steps>
+  <Step title="Review changes">
+    Press `<leader>dd` to open Diffview and review your changes
+  </Step>
+  <Step title="Stage changes">
+    Press `<leader>gg` to open Neogit and stage files with `s`
+  </Step>
+  <Step title="Review staged">
+    Press `=` on staged files to review what will be committed
+  </Step>
+  <Step title="Commit">
+    Press `cc` in Neogit to create a commit
+  </Step>
+  <Step title="Compare with remote">
+    Press `<leader>ds` to see how your branch differs from main
+  </Step>
+  <Step title="Push">
+    Press `Pp` in Neogit to push to remote
+  </Step>
+</Steps>
+
+<Tip>
+  Use Diffview for reviewing changes and understanding code evolution, and Neogit for staging, committing, and Git operations.
+</Tip>
+
+## Integration with other plugins
+
+### Telescope
+
+Neogit integrates with Telescope for fuzzy finding:
+
+- Branch selection uses Telescope
+- Commit selection uses Telescope
+- Remote selection uses Telescope
+
+### nvim-tree
+
+nvim-tree shows Git status indicators alongside files, complementing Neogit's detailed view.
+
+<Note>
+  Both Neogit and Diffview are lazy-loaded and won't affect Neovim's startup time. They load instantly when you first use them.
+</Note>

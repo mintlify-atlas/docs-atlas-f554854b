@@ -1,0 +1,223 @@
+---
+title: Plugin list
+description: Complete list of all installed plugins in nvim-luffy
+---
+
+## Core plugins
+
+### Plugin manager
+
+<Card title="lazy.nvim" icon="box" href="https://github.com/folke/lazy.nvim">
+  A modern plugin manager for Neovim
+</Card>
+
+**Commit:** `306a05526ada86a7b30af95c5cc81ffba93fef97`  
+**Config:** Bootstrapped in `lua/leyland/lazy.lua`
+
+### Essential utilities
+
+| Plugin | Purpose | GitHub | Config |
+|--------|---------|--------|--------|
+| plenary.nvim | Lua utility functions used by many plugins | [nvim-lua/plenary.nvim](https://github.com/nvim-lua/plenary.nvim) | `lua/leyland/plugins/init.lua` |
+| nvim-web-devicons | File icons for various plugins | [nvim-tree/nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) | Auto-loaded by dependent plugins |
+
+## UI and appearance
+
+### Color schemes
+
+nvim-luffy comes with multiple color schemes installed. The default is **bamboo**.
+
+| Plugin | Theme | GitHub | Commit |
+|--------|-------|--------|--------|
+| bamboo.nvim | Bamboo (default) | [ribru17/bamboo.nvim](https://github.com/ribru17/bamboo.nvim) | `1309bc88bffcf1bedc3e84e7fa9004de93da774a` |
+| catppuccin | Catppuccin | [catppuccin/nvim](https://github.com/catppuccin/nvim) | `0a5de4da015a175f416d6ef1eda84661623e0500` |
+| tokyonight.nvim | Tokyo Night | [folke/tokyonight.nvim](https://github.com/folke/tokyonight.nvim) | `5da1b76e64daf4c5d410f06bcb6b9cb640da7dfd` |
+| modus-themes.nvim | Modus Themes | [miikanissi/modus-themes.nvim](https://github.com/miikanissi/modus-themes.nvim) | `c57c2c56c9f0af04f3b609d11caa840880074784` |
+| onedark.nvim | One Dark | [navarasu/onedark.nvim](https://github.com/navarasu/onedark.nvim) | `213c23ae45a04797572242568d5d51937181792d` |
+| rose-pine | Rosé Pine | [rose-pine/neovim](https://github.com/rose-pine/neovim) | `cf2a288696b03d0934da713d66c6d71557b5c997` |
+
+**Config:** `lua/leyland/plugins/colorscheme.lua`
+
+### Dashboard
+
+| Plugin | Purpose | GitHub | Config |
+|--------|---------|--------|--------|
+| alpha-nvim | Startup dashboard with One Piece ASCII art | [goolord/alpha-nvim](https://github.com/goolord/alpha-nvim) | `lua/leyland/plugins/alpha.lua` |
+
+**Commit:** `a9d8fb72213c8b461e791409e7feabb74eb6ce73`
+
+### UI enhancements
+
+| Plugin | Purpose | GitHub | Config |
+|--------|---------|--------|--------|
+| snacks.nvim | Smooth scrolling and other UI enhancements | [folke/snacks.nvim](https://github.com/folke/snacks.nvim) | `lua/leyland/plugins/snacks.lua` |
+
+**Commit:** `fe7cfe9800a182274d0f868a74b7263b8c0c020b`
+
+## File navigation and search
+
+### File explorer
+
+<Card title="nvim-tree.lua" icon="folder-tree" href="https://github.com/nvim-tree/nvim-tree.lua">
+  File explorer tree with git integration
+</Card>
+
+**Commit:** `516f95e8efec035d344114c591e56b7fb2d4c0dc`  
+**Config:** `lua/leyland/plugins/nvim-tree.lua`  
+**Key binding:** `<leader>e` to toggle
+
+### Fuzzy finders
+
+| Plugin | Purpose | GitHub | Config |
+|--------|---------|--------|--------|
+| telescope.nvim | Fuzzy finder for files, text, and more | [nvim-telescope/telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | `lua/leyland/plugins/telescope.lua` |
+| telescope-fzf-native.nvim | FZF sorter for Telescope (faster) | [nvim-telescope/telescope-fzf-native.nvim](https://github.com/nvim-telescope/telescope-fzf-native.nvim) | Loaded as Telescope extension |
+| fzf-lua | Alternative FZF-based fuzzy finder | [ibhagwan/fzf-lua](https://github.com/ibhagwan/fzf-lua) | Dependency for other plugins |
+| mini.pick | Minimal picker | [nvim-mini/mini.pick](https://github.com/nvim-mini/mini.pick) | Dependency for other plugins |
+
+**Telescope commit:** `a0bbec21143c7bc5f8bb02e0005fa0b982edc026`
+
+### Quick file navigation
+
+<Card title="harpoon" icon="anchor" href="https://github.com/ThePrimeagen/harpoon">
+  Mark and quickly navigate between important files
+</Card>
+
+**Branch:** harpoon2  
+**Commit:** `87b1a3506211538f460786c23f98ec63ad9af4e5`  
+**Config:** `lua/leyland/plugins/harpoon.lua`  
+**Key bindings:** `<leader>H` to mark, `<leader>h` for menu, `<leader>1-9` to jump
+
+## Code editing
+
+### Syntax and highlighting
+
+<Card title="nvim-treesitter" icon="code" href="https://github.com/nvim-treesitter/nvim-treesitter">
+  Advanced syntax highlighting and code understanding via Tree-sitter
+</Card>
+
+**Commit:** `42fc28ba918343ebfd5565147a42a26580579482`  
+**Config:** `lua/leyland/plugins/treesitter.lua`
+
+Installed parsers: json, javascript, typescript, tsx, yaml, html, css, prisma, markdown, svelte, graphql, bash, lua, vim, dockerfile, gitignore, and more.
+
+### Motion and navigation
+
+| Plugin | Purpose | GitHub | Config |
+|--------|---------|--------|--------|
+| flash.nvim | Jump to any location with minimal keystrokes | [folke/flash.nvim](https://github.com/folke/flash.nvim) | `lua/leyland/plugins/flash.lua` |
+| vim-tmux-navigator | Seamless navigation between tmux panes and vim splits | [christoomey/vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) | `lua/leyland/plugins/init.lua` |
+
+**Flash.nvim commit:** `fcea7ff883235d9024dc41e638f164a450c14ca2`
+
+### Auto-pairing
+
+| Plugin | Purpose | GitHub | Config |
+|--------|---------|--------|--------|
+| nvim-autopairs | Automatically close brackets, quotes, etc. | [windwp/nvim-autopairs](https://github.com/windwp/nvim-autopairs) | `lua/leyland/plugins/autopairs.lua` |
+
+**Commit:** `59bce2eef357189c3305e25bc6dd2d138c1683f5`
+
+## LSP and completion
+
+### LSP configuration
+
+| Plugin | Purpose | GitHub | Config |
+|--------|---------|--------|--------|
+| nvim-lspconfig | Quickstart configs for Neovim's LSP client | [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) | `lua/leyland/plugins/lsp/lsp.lua` |
+| mason.nvim | Package manager for LSP servers, formatters, and linters | [williamboman/mason.nvim](https://github.com/williamboman/mason.nvim) | `lua/leyland/plugins/lsp/mason.lua` |
+| mason-lspconfig.nvim | Bridge between mason.nvim and nvim-lspconfig | [williamboman/mason-lspconfig.nvim](https://github.com/williamboman/mason-lspconfig.nvim) | `lua/leyland/plugins/lsp/mason.lua` |
+| mason-tool-installer.nvim | Automatically install Mason tools | [WhoIsSethDaniel/mason-tool-installer.nvim](https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim) | `lua/leyland/plugins/lsp/mason.lua` |
+| lazydev.nvim | Better Lua LSP support for Neovim config | [folke/lazydev.nvim](https://github.com/folke/lazydev.nvim) | `lua/leyland/plugins/lsp/lsp.lua` |
+| nvim-lsp-file-operations | File operations with LSP support | [antosha417/nvim-lsp-file-operations](https://github.com/antosha417/nvim-lsp-file-operations) | `lua/leyland/plugins/lsp/lsp.lua` |
+
+**Mason commit:** `44d1e90e1f66e077268191e3ee9d2ac97cc18e65`
+
+### Completion
+
+| Plugin | Purpose | GitHub | Config |
+|--------|---------|--------|--------|
+| nvim-cmp | Completion engine | [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp) | `lua/leyland/plugins/nvim-cmp.lua` |
+| cmp-nvim-lsp | LSP completion source | [hrsh7th/cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp) | LSP config |
+| cmp-buffer | Buffer completion source | [hrsh7th/cmp-buffer](https://github.com/hrsh7th/cmp-buffer) | nvim-cmp config |
+| cmp-path | Path completion source | [hrsh7th/cmp-path](https://github.com/hrsh7th/cmp-path) | nvim-cmp config |
+| lspkind.nvim | VS Code-like pictograms in completion menu | [onsails/lspkind.nvim](https://github.com/onsails/lspkind.nvim) | nvim-cmp config |
+
+**nvim-cmp commit:** `da88697d7f45d16852c6b2769dc52387d1ddc45f`
+
+### Snippets
+
+| Plugin | Purpose | GitHub | Config |
+|--------|---------|--------|--------|
+| LuaSnip | Snippet engine | [L3MON4D3/LuaSnip](https://github.com/L3MON4D3/LuaSnip) | `lua/leyland/plugins/nvim-cmp.lua` |
+| cmp_luasnip | LuaSnip completion source | [saadparwaiz1/cmp_luasnip](https://github.com/saadparwaiz1/cmp_luasnip) | nvim-cmp config |
+| friendly-snippets | Collection of pre-made snippets | [rafamadriz/friendly-snippets](https://github.com/rafamadriz/friendly-snippets) | nvim-cmp config |
+
+**LuaSnip commit:** `5a1e39223db9a0498024a77b8441169d260c8c25`
+
+## Formatting
+
+<Card title="conform.nvim" icon="wand-magic-sparkles" href="https://github.com/stevearc/conform.nvim">
+  Format code with multiple formatters
+</Card>
+
+**Commit:** `c2526f1cde528a66e086ab1668e996d162c75f4f`  
+**Config:** `lua/leyland/plugins/formatting.lua`  
+**Key binding:** `<leader>mp` to format
+
+Configured formatters:
+- **JavaScript/TypeScript/React:** prettier
+- **Lua:** stylua
+- **Python:** isort, black
+- **CSS/HTML/JSON/YAML/Markdown:** prettier
+
+## Git integration
+
+| Plugin | Purpose | GitHub | Config |
+|--------|---------|--------|--------|
+| neogit | Magit-like git interface | [NeogitOrg/neogit](https://github.com/NeogitOrg/neogit) | `lua/leyland/plugins/neogit.lua` |
+| diffview.nvim | Git diff viewer | [sindrets/diffview.nvim](https://github.com/sindrets/diffview.nvim) | `lua/leyland/plugins/diffview.lua` |
+
+**Neogit commit:** `9104991a424f5e0891cbe1cb44f91ae22cef28a0`  
+**Diffview commit:** `4516612fe98ff56ae0415a259ff6361a89419b0a`
+
+## Diagnostics and todos
+
+| Plugin | Purpose | GitHub | Config |
+|--------|---------|--------|--------|
+| trouble.nvim | Pretty diagnostics, references, and more | [folke/trouble.nvim](https://github.com/folke/trouble.nvim) | `lua/leyland/plugins/trouble.lua` |
+| todo-comments.nvim | Highlight and search for TODO comments | [folke/todo-comments.nvim](https://github.com/folke/todo-comments.nvim) | Loaded as Telescope dependency |
+
+**Trouble commit:** `bd67efe408d4816e25e8491cc5ad4088e708a69a`  
+**todo-comments commit:** `31e3c38ce9b29781e4422fc0322eb0a21f4e8668`
+
+## Installed language servers
+
+The following LSP servers are automatically installed via Mason:
+
+- `ts_ls` - TypeScript/JavaScript
+- `html` - HTML
+- `cssls` - CSS
+- `tailwindcss` - Tailwind CSS
+- `svelte` - Svelte
+- `lua_ls` - Lua
+- `graphql` - GraphQL
+- `emmet_ls` - Emmet
+- `prismals` - Prisma
+- `pyright` - Python
+- `eslint` - ESLint
+
+## Installed formatters and linters
+
+The following tools are automatically installed via Mason:
+
+- `prettier` - JavaScript/TypeScript/CSS/HTML/JSON formatter
+- `stylua` - Lua formatter
+- `isort` - Python import sorter
+- `black` - Python formatter
+- `pylint` - Python linter
+- `eslint_d` - Fast ESLint daemon
+
+<Note>
+All plugin versions are locked in `lazy-lock.json` to ensure reproducible installations.
+</Note>

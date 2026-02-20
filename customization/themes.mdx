@@ -1,0 +1,182 @@
+---
+title: Themes
+description: Customize the look and feel of nvim-luffy by switching colorschemes and adding new themes
+---
+
+## Available themes
+
+nvim-luffy comes with several pre-installed colorschemes inspired by the vibrant world of One Piece:
+
+- **Catppuccin** - Soothing pastel theme
+- **Tokyo Night** - Clean, dark theme
+- **Modus Themes** - Accessible themes with great contrast
+- **Bamboo** (default) - Warm, natural colorscheme
+- **One Dark** - Classic dark theme
+- **Rose Pine** - Low contrast theme with muted colors
+
+## Switching colorschemes
+
+The default colorscheme is set to **Bamboo**. To switch to a different theme, you need to modify the colorscheme configuration file.
+
+<Steps>
+  <Step title="Open the colorscheme file">
+    Navigate to `lua/leyland/plugins/colorscheme.lua` in your nvim-luffy configuration directory.
+  </Step>
+  
+  <Step title="Find the config function">
+    Locate the plugin that contains the `config` function. By default, this is the `rose-pine` plugin entry (line 35-38):
+    
+    ```lua lua/leyland/plugins/colorscheme.lua
+    {
+      "rose-pine/neovim",
+      name = "rose-pine",
+      priority = 1000,
+      config = function()
+        vim.cmd.colorscheme("bamboo")
+      end,
+    },
+    ```
+  </Step>
+  
+  <Step title="Change the colorscheme">
+    Replace `"bamboo"` with your desired theme name:
+    
+    <CodeGroup>
+    ```lua Catppuccin
+    config = function()
+      vim.cmd.colorscheme("catppuccin")
+    end,
+    ```
+    
+    ```lua Tokyo Night
+    config = function()
+      vim.cmd.colorscheme("tokyonight")
+    end,
+    ```
+    
+    ```lua Rose Pine
+    config = function()
+      vim.cmd.colorscheme("rose-pine")
+    end,
+    ```
+    </CodeGroup>
+  </Step>
+  
+  <Step title="Restart Neovim">
+    Close and reopen Neovim to see your new theme.
+  </Step>
+</Steps>
+
+<Tip>
+You can also switch themes interactively in Neovim by running `:colorscheme <theme-name>` in command mode. This change won't persist after restart unless you update the config file.
+</Tip>
+
+## Adding a new theme
+
+To add a new colorscheme to nvim-luffy, you'll need to add it as a plugin entry.
+
+<Steps>
+  <Step title="Find the theme plugin">
+    Search for your desired theme on GitHub. Most Neovim themes are available as plugins. For example, let's add the "gruvbox" theme: `ellisonleao/gruvbox.nvim`
+  </Step>
+  
+  <Step title="Add the plugin entry">
+    Open `lua/leyland/plugins/colorscheme.lua` and add a new table entry:
+    
+    ```lua lua/leyland/plugins/colorscheme.lua
+    return {
+      -- ... existing themes ...
+      {
+        "ellisonleao/gruvbox.nvim",
+        priority = 1000,
+        config = true,
+      },
+    }
+    ```
+  </Step>
+  
+  <Step title="Set as default (optional)">
+    If you want to use the new theme as your default, update the config function:
+    
+    ```lua lua/leyland/plugins/colorscheme.lua
+    {
+      "rose-pine/neovim",
+      name = "rose-pine",
+      priority = 1000,
+      config = function()
+        vim.cmd.colorscheme("gruvbox")
+      end,
+    },
+    ```
+  </Step>
+  
+  <Step title="Install the theme">
+    Restart Neovim or run `:Lazy sync` to install the new theme plugin.
+  </Step>
+</Steps>
+
+## Theme-specific configuration
+
+Some themes support additional configuration options. You can configure these in the plugin's `config` function:
+
+```lua lua/leyland/plugins/colorscheme.lua
+{
+  "catppuccin/nvim",
+  name = "catppuccin",
+  priority = 1000,
+  config = function()
+    require("catppuccin").setup({
+      flavour = "mocha", -- latte, frappe, macchiato, mocha
+      transparent_background = true,
+      integrations = {
+        treesitter = true,
+        telescope = true,
+      },
+    })
+    vim.cmd.colorscheme("catppuccin")
+  end,
+},
+```
+
+<Warning>
+When adding theme-specific configuration, make sure to set the colorscheme **after** calling the theme's `setup()` function. Otherwise, your configuration may not be applied.
+</Warning>
+
+## Understanding priority
+
+The `priority = 1000` setting ensures colorscheme plugins load before other plugins. This is important because many plugins style their UI elements based on the active colorscheme.
+
+<Tip>
+For colorscheme plugins, always set `priority = 1000` or higher. Also set `lazy = false` if you want to ensure the theme is available immediately on startup.
+</Tip>
+
+## Troubleshooting
+
+### Theme not loading
+
+If your theme isn't loading:
+
+1. Check that the plugin is installed by running `:Lazy` and verifying it appears in the list
+2. Verify the colorscheme name matches the plugin's documentation (it may differ from the repo name)
+3. Ensure only one plugin has the `config` function that sets the colorscheme
+
+### Colors look wrong
+
+If colors appear incorrect:
+
+- Ensure your terminal supports true color (24-bit color)
+- Add this to your `lua/leyland/core/options.lua`:
+  ```lua
+  vim.opt.termguicolors = true
+  ```
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Keybindings" icon="keyboard" href="/customization/keybindings">
+    Learn how to customize keybindings
+  </Card>
+  <Card title="Adding plugins" icon="plug" href="/customization/adding-plugins">
+    Add new plugins to extend functionality
+  </Card>
+</CardGroup>
