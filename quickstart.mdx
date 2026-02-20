@@ -63,7 +63,7 @@ These are your most-used keybindings:
 
 Harpoon is a powerful feature for quick file switching. Think of it as marking your most important files:
 
-```lua lua/leyland/plugins/harpoon.lua
+```text lua/leyland/plugins/harpoon.lua
 -- Mark current file
 <Space>H
 
@@ -99,7 +99,7 @@ Harpoon is a powerful feature for quick file switching. Think of it as marking y
 
 ### Buffer management
 
-```lua lua/leyland/core/keymaps.lua
+```text lua/leyland/core/keymaps.lua
 -- Close current buffer
 <Space>bd
 
@@ -109,7 +109,7 @@ Harpoon is a powerful feature for quick file switching. Think of it as marking y
 
 ### Window management
 
-```lua lua/leyland/core/keymaps.lua
+```text lua/leyland/core/keymaps.lua
 -- Split window vertically
 <Space>|
 
@@ -151,7 +151,7 @@ Telescope is your primary tool for finding files and text. Here's how to use it 
 
 ### Telescope keybindings reference
 
-```lua lua/leyland/plugins/telescope.lua
+```text lua/leyland/plugins/telescope.lua
 <Space><Space>  -- Find files
 <Space>fr       -- Recent files (oldfiles)
 <Space>/        -- Live grep (search in files)
@@ -170,7 +170,7 @@ Press `<Space>e` to toggle nvim-tree on the right side:
 
 ### File explorer navigation
 
-```lua lua/leyland/plugins/nvim-tree.lua
+```text lua/leyland/plugins/nvim-tree.lua
 l or Enter  -- Open file or expand directory
 h           -- Close directory or go to parent
 j/k         -- Navigate up/down
@@ -230,7 +230,7 @@ K   -- Show hover documentation
 
 The completion menu appears automatically as you type in insert mode:
 
-```lua lua/leyland/plugins/nvim-cmp.lua
+```text lua/leyland/plugins/nvim-cmp.lua
 -- Navigation in completion menu
 Ctrl+j       -- Next suggestion
 Ctrl+k       -- Previous suggestion
@@ -257,7 +257,7 @@ Completions come from multiple sources:
 
 Flash provides lightning-fast navigation within files:
 
-```lua lua/leyland/plugins/flash.lua
+```text lua/leyland/plugins/flash.lua
 s            -- Flash jump (2-character search)
 S            -- Flash treesitter (select syntax nodes)  
 Ctrl+Space   -- Incremental treesitter selection
